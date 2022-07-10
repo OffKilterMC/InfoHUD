@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "infohud",
+  "version": "${version}",
+  "name": "InfoHUD",
+  "description": "",
+  "authors": ["AD OffKilter"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/infohud/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "offkilter.infohud.client.InfoHUDClient"
+    ],
+    "main": [
+      "offkilter.infohud.InfoHUD"
+    ]
+  },
+  "mixins": [
+    "infohud.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.8",
+    "fabric": ">=0.56.0+1.19",
+    "minecraft": "^1.19"
+  }
+}
