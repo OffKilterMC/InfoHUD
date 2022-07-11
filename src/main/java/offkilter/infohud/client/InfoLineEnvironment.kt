@@ -14,5 +14,6 @@ data class InfoLineEnvironment(
     val level: ClientLevel,
     val blockPos: BlockPos,
     val camera: Entity,
-    val chunk: LevelChunk
+    val clientChunk: LevelChunk?,
+    val serverChunk: LevelChunk?
 )

@@ -7,6 +7,7 @@ import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.Mth
+import net.minecraft.world.DifficultyInstance
 import net.minecraft.world.level.LightLayer
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.phys.BlockHitResult
@@ -50,7 +51,7 @@ enum class InfoLine(val key: String, val displayName: String, val desc: String, 
         SettingsCategory.LIGHT
     ) {
         override fun getInfoString(env: InfoLineEnvironment): String? {
-            return if (!env.chunk.isEmpty) {
+            return if (env.clientChunk != null && !env.clientChunk.isEmpty) {
                 val level = env.level
                 val blockPos = env.blockPos
                 val darkness = if (level.isThundering) 10 else 0
@@ -70,7 +71,7 @@ enum class InfoLine(val key: String, val displayName: String, val desc: String, 
         SettingsCategory.LIGHT
     ) {
         override fun getInfoString(env: InfoLineEnvironment): String? {
-            return if (!env.chunk.isEmpty) {
+            return if (env.clientChunk != null && !env.clientChunk.isEmpty) {
                 val level = env.level
                 val blockPos = env.blockPos
                 val darkness = InfoHUDClient.skyDarken
@@ -173,6 +174,36 @@ enum class InfoLine(val key: String, val displayName: String, val desc: String, 
             val tps = PerfCounters.tps.toFloat() //1000.0f / Math.max(50.0f, mspt);
             return String.format("TPS: %.1f, MSPT: %.1f", tps, mspt)
         }
+    },
+    LOCAL_DIFFICULTY(
+        "local-difficulty",
+        "offkilter.infohud.localdifficulty.name",
+        "offkilter.infohud.localdifficulty.desc",
+        SettingsCategory.GAMEPLAY
+    ) {
+        override fun getInfoString(env: InfoLineEnvironment): String? {
+            val blockPos = env.blockPos
+            val level = env.level
+            val serverChunk = env.serverChunk
+            if (blockPos.y >= level.minBuildHeight && blockPos.y < level.maxBuildHeight) {
+                var l = 0L
+                var h = 0.0f
+                if (serverChunk != null) {
+                    h = level.moonBrightness
+                    l = serverChunk.inhabitedTime
+                }
+                val difficultyInstance = DifficultyInstance(level.difficulty, level.dayTime, l, h)
+                return String.format(
+                    Locale.ROOT,
+                    "Local Difficulty: %.2f | %.2f (Day %d)",
+                    java.lang.Float.valueOf(difficultyInstance.effectiveDifficulty),
+                    java.lang.Float.valueOf(difficultyInstance.specialMultiplier),
+                    level.dayTime / 24000L
+                )
+            } else {
+                return null
+            }
+        }
     };
 
     enum class SettingsCategory(val iconResource: ResourceLocation) {
@@ -180,7 +211,8 @@ enum class InfoLine(val key: String, val displayName: String, val desc: String, 
         PERF(ResourceLocation("infohud:textures/gui/stopwatch.png")),
         BLOCK(ResourceLocation("infohud:textures/gui/block.png")),
         LIGHT(ResourceLocation("infohud:textures/gui/light.png")),
-        WORLD(ResourceLocation("infohud:textures/gui/world.png"));
+        WORLD(ResourceLocation("infohud:textures/gui/world.png")),
+        GAMEPLAY(ResourceLocation("infohud:textures/gui/sword.png"));
     }
 
     abstract fun getInfoString(env: InfoLineEnvironment): String?

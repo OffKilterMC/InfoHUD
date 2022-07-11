@@ -3,35 +3,74 @@ package offkilter.infohud.client
 import com.google.common.base.Strings
 import com.google.common.collect.Lists
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.datafixers.util.Either
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.DebugScreenOverlay
-import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.chunk.ChunkAccess
+import net.minecraft.world.level.chunk.ChunkStatus
 import net.minecraft.world.level.chunk.LevelChunk
 import offkilter.infohud.client.InfoHUDSettings.currentInfoLines
+import java.util.concurrent.CompletableFuture
 
 @Environment(value = EnvType.CLIENT)
 class InfoHUDRenderer(private val minecraft: Minecraft) {
     private val font = minecraft.font
-    private var clientChunk: LevelChunk? = null
     private var lastChunkPos: ChunkPos? = null
+    private var clientChunk: LevelChunk? = null
+    private var serverChunk: CompletableFuture<LevelChunk>? = null
 
     private fun updateChunkPos(pos: BlockPos) {
         val chunkPos = ChunkPos(pos)
         if (chunkPos != lastChunkPos) {
             lastChunkPos = chunkPos
             clientChunk = null
+            serverChunk = null
         }
     }
 
-    private fun getClientChunk(level: ClientLevel): LevelChunk {
+    private fun getClientChunk(): LevelChunk? {
         if (clientChunk == null) {
-            clientChunk = level.getChunk(lastChunkPos!!.x, lastChunkPos!!.z)
+            clientChunk = minecraft.level?.let { level ->
+                lastChunkPos?.let { pos ->
+                    level.getChunk(pos.x, pos.z)
+                }
+            }
         }
-        return clientChunk!!
+        return clientChunk
+    }
+
+    private fun getServerLevel(): ServerLevel? {
+        val integratedServer = minecraft.singleplayerServer
+        val level = minecraft.level
+        if (integratedServer != null && level != null) {
+            return integratedServer.getLevel(level.dimension())
+        }
+        return null
+    }
+
+    private fun getServerChunk(): LevelChunk? {
+        if (serverChunk == null) {
+            serverChunk = getServerLevel()?.let { serverLevel ->
+                lastChunkPos?.let { lastChunkPos ->
+                    serverLevel.chunkSource.getChunkFuture(lastChunkPos.x, lastChunkPos.z, ChunkStatus.FULL, false)
+                        .thenApply { either: Either<ChunkAccess?, ChunkLoadingFailure?> ->
+                            either.map(
+                                { chunkAccess: ChunkAccess? -> chunkAccess as LevelChunk? },
+                                { _: ChunkLoadingFailure? -> null }
+                            )
+                        }
+                }
+            } ?: run {
+               CompletableFuture.completedFuture(getClientChunk())
+            }
+        }
+        return serverChunk?.getNow(null)
     }
 
     fun render(poseStack: PoseStack) {
@@ -44,8 +83,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) {
 
         val blockPos = camera.blockPosition()
         updateChunkPos(blockPos)
-        val levelChunk = getClientChunk(level)
-        val env = InfoLineEnvironment(minecraft, level, blockPos, camera, levelChunk)
+        val env = InfoLineEnvironment(minecraft, level, blockPos, camera, getClientChunk(), getServerChunk())
 
         val list: MutableList<String> = Lists.newArrayList()
         for (infoLine in currentInfoLines) {

@@ -20,5 +20,7 @@
   "offkilter.infohud.targetedfluid.name": "Targeted Fluid",
   "offkilter.infohud.targetedfluid.desc": "Reports name of current fluid block player is looking at.",
   "offkilter.infohud.tickperf.name": "Server Tick Performance",
-  "offkilter.infohud.tickperf.desc": "Information about server tick performance (TPS/MSPT). Requires server install."
+  "offkilter.infohud.tickperf.desc": "Information about server tick performance (TPS/MSPT). Requires server install.",
+  "offkilter.infohud.localdifficulty.name": "Local Difficulty",
+  "offkilter.infohud.localdifficulty.desc": "Local difficulty information"
 }
