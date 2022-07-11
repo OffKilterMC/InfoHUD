@@ -15,6 +15,7 @@ import net.minecraft.world.phys.HitResult
 import offkilter.infohud.mixin.MinecraftMixin
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.math.roundToInt
 
 @Environment(value = EnvType.CLIENT)
 enum class InfoLine(val key: String, val displayName: String, val desc: String, val category: SettingsCategory) {
@@ -202,6 +203,18 @@ enum class InfoLine(val key: String, val displayName: String, val desc: String, 
                 )
             } else {
                 return null
+            }
+        }
+    },
+    MOOD(
+        "mood",
+        "offkilter.infohud.mood.name",
+        "offkilter.infohud.mood.desc",
+        SettingsCategory.GAMEPLAY
+    ) {
+        override fun getInfoString(env: InfoLineEnvironment): String? {
+            return env.minecraft.player?.let { p ->
+                String.format("Mood: %d%%", (p.currentMood * 100.0f).roundToInt())
             }
         }
     };

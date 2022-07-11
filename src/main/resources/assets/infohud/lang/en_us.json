@@ -22,5 +22,7 @@
   "offkilter.infohud.tickperf.name": "Server Tick Performance",
   "offkilter.infohud.tickperf.desc": "Information about server tick performance (TPS/MSPT). Requires server install.",
   "offkilter.infohud.localdifficulty.name": "Local Difficulty",
-  "offkilter.infohud.localdifficulty.desc": "Local difficulty information"
+  "offkilter.infohud.localdifficulty.desc": "Local difficulty information",
+  "offkilter.infohud.mood.name": "Mood",
+  "offkilter.infohud.mood.desc": "When this reaches 100%, it plays a random ambient sound."
 }
