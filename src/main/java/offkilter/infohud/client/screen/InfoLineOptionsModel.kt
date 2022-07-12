@@ -1,16 +1,17 @@
-package offkilter.infohud.screen
+package offkilter.infohud.client.screen
 
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import offkilter.infohud.client.InfoLine
 import offkilter.infohud.client.InfoHUDSettings
+import offkilter.infohud.infoline.InfoLine
+import offkilter.infohud.infoline.InfoLineRegistry
 
 class InfoLineOptionsModel(private val onListChanged: Runnable) {
     private val selectedInfoLines = mutableListOf<InfoLine>()
     private val unselectedInfoLines = mutableListOf<InfoLine>()
 
     init {
-        val all = InfoLine.values().sortedBy { it.displayName }
+        val all = InfoLineRegistry.allInfoLines.sortedBy { it.name }
         val current = InfoHUDSettings.currentInfoLines
 
         selectedInfoLines.addAll(current)
@@ -40,7 +41,7 @@ class InfoLineOptionsModel(private val onListChanged: Runnable) {
     private fun unselectItem(infoLine: InfoLine) {
         selectedInfoLines.remove(infoLine)
         unselectedInfoLines.add(0, infoLine)
-        unselectedInfoLines.sortBy { it.displayName }
+        unselectedInfoLines.sortBy { it.name }
         onListChanged.run()
     }
 
@@ -66,8 +67,8 @@ class InfoLineOptionsModel(private val onListChanged: Runnable) {
     }
 
     private inner class SelectedOption(private val infoLine: InfoLine) : Option {
-        override val name: Component = Component.translatable(infoLine.displayName)
-        override val desc: Component = Component.translatable(infoLine.desc)
+        override val name: Component = Component.translatable(infoLine.name)
+        override val desc: Component = Component.translatable(infoLine.description)
         override val icon = infoLine.category.iconResource
         override val canAdd = false
         override val canRemove = true
@@ -104,8 +105,8 @@ class InfoLineOptionsModel(private val onListChanged: Runnable) {
     }
 
     private inner class UnselectedOption(private val infoLine: InfoLine) : Option {
-        override val name: Component = Component.translatable(infoLine.displayName)
-        override val desc: Component = Component.translatable(infoLine.desc)
+        override val name: Component = Component.translatable(infoLine.name)
+        override val desc: Component = Component.translatable(infoLine.description)
         override val icon = infoLine.category.iconResource
         override val canAdd = true
         override val canRemove = true

@@ -4,6 +4,8 @@ import com.google.gson.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
+import offkilter.infohud.infoline.InfoLine
+import offkilter.infohud.infoline.InfoLineRegistry
 import java.io.FileReader
 import java.nio.file.Path
 
@@ -29,9 +31,9 @@ object InfoHUDSettings {
             mutableInfoLines.add(infoLine)
 
             // later: come up with something more generic. A listener, e.g.
-            if (infoLine == InfoLine.TICK_PERF) {
+            if (infoLine == InfoLineRegistry.TICK_PERF) {
                 InfoHUDClient.syncTickPerfEnabled()
-            } else if (infoLine == InfoLine.SERVER_LIGHT) {
+            } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
                 InfoHUDClient.syncServerLight()
             }
 
@@ -43,9 +45,9 @@ object InfoHUDSettings {
         mutableInfoLines.remove(infoLine)
 
         // later: come up with something more generic. A listener, e.g.
-        if (infoLine == InfoLine.TICK_PERF) {
+        if (infoLine == InfoLineRegistry.TICK_PERF) {
             InfoHUDClient.syncTickPerfEnabled()
-        } else if (infoLine == InfoLine.SERVER_LIGHT) {
+        } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
             InfoHUDClient.syncServerLight()
         }
 
@@ -113,10 +115,9 @@ object InfoHUDSettings {
             if (overlayList != null) {
                 for (e in overlayList) {
                     val value = e.asJsonPrimitive.asString
-                    val infoLine = InfoLine.BY_NAME[value]
-                    if (infoLine != null) {
+                    InfoLineRegistry.infoLineWithKey(value)?.let { infoLine ->
                         overlays.add(infoLine)
-                    } else {
+                    } ?: run {
                         println("[InfoHUD] Ignoring unknown info name: $value")
                     }
                 }
@@ -129,13 +130,13 @@ object InfoHUDSettings {
     }
 
     private val defaultInfoLines = arrayOf(
-        InfoLine.FPS,
-        InfoLine.LOCATION,
-        InfoLine.BLOCK,
-        InfoLine.DIRECTION,
-        InfoLine.BIOME,
-        InfoLine.CLIENT_LIGHT,
-        InfoLine.TARGETED_BLOCK,
-        InfoLine.TARGETED_FLUID
+        InfoLineRegistry.FPS,
+        InfoLineRegistry.LOCATION,
+        InfoLineRegistry.BLOCK,
+        InfoLineRegistry.DIRECTION,
+        InfoLineRegistry.BIOME,
+        InfoLineRegistry.CLIENT_LIGHT,
+        InfoLineRegistry.TARGETED_BLOCK,
+        InfoLineRegistry.TARGETED_FLUID
     )
 }

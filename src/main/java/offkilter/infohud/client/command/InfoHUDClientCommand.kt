@@ -1,4 +1,4 @@
-package offkilter.infohud.client
+package offkilter.infohud.client.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
@@ -6,6 +6,8 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import offkilter.infohud.client.InfoHUDSettings
+import offkilter.infohud.infoline.InfoLine
 
 @Environment(value = EnvType.CLIENT)
 object InfoHUDClientCommand {

@@ -16,6 +16,7 @@ import net.minecraft.world.level.chunk.ChunkAccess
 import net.minecraft.world.level.chunk.ChunkStatus
 import net.minecraft.world.level.chunk.LevelChunk
 import offkilter.infohud.client.InfoHUDSettings.currentInfoLines
+import offkilter.infohud.infoline.InfoLineEnvironment
 import java.util.concurrent.CompletableFuture
 
 @Environment(value = EnvType.CLIENT)

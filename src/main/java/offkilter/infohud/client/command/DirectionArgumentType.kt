@@ -1,4 +1,4 @@
-package offkilter.infohud.client
+package offkilter.infohud.client.command
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.minecraft.network.chat.Component
-import java.util.*
+import offkilter.infohud.client.InfoHUDSettings
 import java.util.concurrent.CompletableFuture
 
 class DirectionArgumentType private constructor() : ArgumentType<InfoHUDSettings.Direction> {
@@ -38,7 +38,7 @@ class DirectionArgumentType private constructor() : ArgumentType<InfoHUDSettings
     }
 
     companion object {
-        private val EXAMPLES: Collection<String> = Arrays.asList("up", "down")
+        private val EXAMPLES = listOf("up", "down")
         fun direction(): DirectionArgumentType {
             return DirectionArgumentType()
         }

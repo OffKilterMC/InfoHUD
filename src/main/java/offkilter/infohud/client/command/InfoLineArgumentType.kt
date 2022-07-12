@@ -1,4 +1,4 @@
-package offkilter.infohud.client
+package offkilter.infohud.client.command
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
@@ -8,13 +8,14 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.minecraft.network.chat.Component
-import java.util.*
+import offkilter.infohud.infoline.InfoLine
+import offkilter.infohud.infoline.InfoLineRegistry
 import java.util.concurrent.CompletableFuture
 
 class InfoLineArgumentType private constructor() : ArgumentType<InfoLine> {
     @Throws(CommandSyntaxException::class)
     override fun parse(reader: StringReader): InfoLine {
-        val result = InfoLine.BY_NAME[reader.readUnquotedString()]
+        val result = InfoLineRegistry.infoLineWithKey(reader.readUnquotedString())
         return result ?: throw SimpleCommandExceptionType(Component.literal("Invalid info line identifier")).create()
     }
 
@@ -22,7 +23,7 @@ class InfoLineArgumentType private constructor() : ArgumentType<InfoLine> {
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        enumValues<InfoLine>().forEach {
+        InfoLineRegistry.allInfoLines.forEach {
             if (it.key.startsWith(builder.remainingLowerCase)) {
                 builder.suggest(it.key)
             }
@@ -35,7 +36,7 @@ class InfoLineArgumentType private constructor() : ArgumentType<InfoLine> {
     }
 
     companion object {
-        private val EXAMPLES: Collection<String> = Arrays.asList("fps", "location")
+        private val EXAMPLES: Collection<String> = listOf("fps", "location")
         fun infoLine(): InfoLineArgumentType {
             return InfoLineArgumentType()
         }
