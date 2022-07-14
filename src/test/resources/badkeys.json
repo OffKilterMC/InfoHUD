@@ -1,0 +1,14 @@
+{
+  "info-overlays": [
+    "fps",
+    "location",
+    "block",
+    "invaliditem1",
+    "biome",
+    "client-light",
+    "invaliditem2",
+    "targeted-fluid",
+    "tick-perf",
+    "invaliditem3"
+  ]
+}

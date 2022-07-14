@@ -22,9 +22,10 @@ import offkilter.infohud.InfoHUDNetworking
 import offkilter.infohud.client.command.InfoHUDClientCommand
 import offkilter.infohud.infoline.InfoLineRegistry
 import offkilter.infohud.client.screen.InfoHUDOptionsScreen
+import offkilter.infohud.infoline.InfoLine
 
 @Environment(EnvType.CLIENT)
-class InfoHUDClient : ClientModInitializer {
+class InfoHUDClient : ClientModInitializer, InfoHUDSettings.Listener {
     override fun onInitializeClient() {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandBuildContext ->
             InfoHUDClientCommand.register(dispatcher)
@@ -52,6 +53,29 @@ class InfoHUDClient : ClientModInitializer {
                 }
             }
         })
+
+        InfoHUDSettings.INSTANCE.addListener(this)
+    }
+
+    override fun infoLineAdded(infoLine: InfoLine) {
+        if (infoLine == InfoLineRegistry.TICK_PERF) {
+            syncTickPerfEnabled()
+        } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
+            syncServerLight()
+        }
+    }
+
+    override fun infoLineRemoved(infoLine: InfoLine) {
+        if (infoLine == InfoLineRegistry.TICK_PERF) {
+            syncTickPerfEnabled()
+        } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
+            syncServerLight()
+        }
+    }
+
+    override fun infoLinesChanged() {
+        syncTickPerfEnabled()
+        syncServerLight()
     }
 
     companion object {
@@ -59,7 +83,7 @@ class InfoHUDClient : ClientModInitializer {
         var showHUD = true
         var skyDarken = 0
         fun syncTickPerfEnabled() {
-            val wantsTickPerf = InfoHUDSettings.currentInfoLines.contains(InfoLineRegistry.TICK_PERF)
+            val wantsTickPerf = InfoHUDSettings.INSTANCE.currentInfoLines.contains(InfoLineRegistry.TICK_PERF)
             val channels = ClientPlayNetworking.getReceived()
             val listeningToTickPerf = channels.contains(InfoHUDNetworking.TICK_PERF)
             if (wantsTickPerf != listeningToTickPerf) {
@@ -76,7 +100,7 @@ class InfoHUDClient : ClientModInitializer {
         }
 
         fun syncServerLight() {
-            val wantsTickPerf = InfoHUDSettings.currentInfoLines.contains(InfoLineRegistry.SERVER_LIGHT)
+            val wantsTickPerf = InfoHUDSettings.INSTANCE.currentInfoLines.contains(InfoLineRegistry.SERVER_LIGHT)
             val channels = ClientPlayNetworking.getReceived()
             val listeningToTickPerf = channels.contains(InfoHUDNetworking.SERVER_LIGHT)
             if (wantsTickPerf != listeningToTickPerf) {

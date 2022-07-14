@@ -15,7 +15,6 @@ import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.chunk.ChunkAccess
 import net.minecraft.world.level.chunk.ChunkStatus
 import net.minecraft.world.level.chunk.LevelChunk
-import offkilter.infohud.client.InfoHUDSettings.currentInfoLines
 import offkilter.infohud.infoline.InfoLineEnvironment
 import java.util.concurrent.CompletableFuture
 
@@ -87,7 +86,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) {
         val env = InfoLineEnvironment(minecraft, level, blockPos, camera, getClientChunk(), getServerChunk())
 
         val list: MutableList<String> = Lists.newArrayList()
-        for (infoLine in currentInfoLines) {
+        for (infoLine in InfoHUDSettings.INSTANCE.currentInfoLines) {
             val result = infoLine.getInfoString(env)
             if (result != null) {
                 list.add(result)

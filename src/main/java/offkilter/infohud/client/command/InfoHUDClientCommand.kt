@@ -62,9 +62,9 @@ object InfoHUDClientCommand {
         @Suppress("UNUSED_PARAMETER") sourceStack: FabricClientCommandSource?
     ): Int {
         if (visible) {
-            InfoHUDSettings.add(infoLine)
+            InfoHUDSettings.INSTANCE.add(infoLine)
         } else {
-            InfoHUDSettings.remove(infoLine)
+            InfoHUDSettings.INSTANCE.remove(infoLine)
         }
         return 0
     }
@@ -74,7 +74,7 @@ object InfoHUDClientCommand {
         direction: InfoHUDSettings.Direction,
         @Suppress("UNUSED_PARAMETER") sourceStack: FabricClientCommandSource?
     ): Int {
-        InfoHUDSettings.move(infoLine, direction)
+        InfoHUDSettings.INSTANCE.move(infoLine, direction)
         return 0
     }
 }

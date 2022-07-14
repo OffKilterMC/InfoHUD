@@ -6,18 +6,55 @@ import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 import offkilter.infohud.infoline.InfoLine
 import offkilter.infohud.infoline.InfoLineRegistry
-import java.io.FileReader
+import java.io.Reader
+import java.io.Writer
 import java.nio.file.Path
 
 @Environment(value = EnvType.CLIENT)
-object InfoHUDSettings {
+class InfoHUDSettings(private val helper: FileHelper) {
+    interface FileHelper {
+        fun getReader(): Reader
+        fun getWriter(): Writer
+    }
+
     enum class Direction {
         UP,
         DOWN
     }
 
-    private val file: Path
-        get() = FabricLoader.getInstance().configDir.resolve("infohud.json")
+    interface Listener {
+        fun infoLineAdded(infoLine: InfoLine)
+        fun infoLineRemoved(infoLine: InfoLine)
+        fun infoLinesChanged()
+    }
+
+    private val listeners: MutableSet<Listener> = mutableSetOf<Listener>()
+
+    fun addListener(listener: Listener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: Listener) {
+        listeners.remove(listener)
+    }
+
+    private fun announceAdded(infoLine: InfoLine) {
+        listeners.forEach {
+            it.infoLineAdded(infoLine)
+        }
+    }
+
+    private fun announceRemoved(infoLine: InfoLine) {
+        listeners.forEach {
+            it.infoLineRemoved(infoLine)
+        }
+    }
+
+    private fun announceChanged() {
+        listeners.forEach {
+            it.infoLinesChanged()
+        }
+    }
 
     private val mutableInfoLines: MutableList<InfoLine> by lazy {
         readInfoOverlays()
@@ -29,29 +66,19 @@ object InfoHUDSettings {
     fun add(infoLine: InfoLine) {
         if (!mutableInfoLines.contains(infoLine)) {
             mutableInfoLines.add(infoLine)
-
-            // later: come up with something more generic. A listener, e.g.
-            if (infoLine == InfoLineRegistry.TICK_PERF) {
-                InfoHUDClient.syncTickPerfEnabled()
-            } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
-                InfoHUDClient.syncServerLight()
-            }
-
             save()
+
+            announceAdded(infoLine)
         }
     }
 
     fun remove(infoLine: InfoLine) {
-        mutableInfoLines.remove(infoLine)
+        if (mutableInfoLines.contains(infoLine)) {
+            mutableInfoLines.remove(infoLine)
+            save()
 
-        // later: come up with something more generic. A listener, e.g.
-        if (infoLine == InfoLineRegistry.TICK_PERF) {
-            InfoHUDClient.syncTickPerfEnabled()
-        } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
-            InfoHUDClient.syncServerLight()
+            announceRemoved(infoLine)
         }
-
-        save()
     }
 
     fun move(infoLine: InfoLine, direction: Direction) {
@@ -83,11 +110,8 @@ object InfoHUDSettings {
     fun setActiveInfoLines(infoLines: List<InfoLine>) {
         mutableInfoLines.clear()
         mutableInfoLines.addAll(infoLines)
-
-        InfoHUDClient.syncTickPerfEnabled()
-        InfoHUDClient.syncServerLight()
-
         save()
+        announceChanged()
     }
 
     private fun save() {
@@ -97,7 +121,7 @@ object InfoHUDSettings {
         root.add("info-overlays", list)
 
         try {
-            file.toFile().writer().use { writer ->
+            helper.getWriter().use { writer ->
                 val gson = GsonBuilder().setPrettyPrinting().create()
                 gson.toJson(root, writer)
             }
@@ -109,7 +133,7 @@ object InfoHUDSettings {
     private fun readInfoOverlays(): MutableList<InfoLine> {
         val overlays: MutableList<InfoLine> = ArrayList()
         try {
-            val root = JsonParser.parseReader(FileReader(file.toFile()))
+            val root = JsonParser.parseReader(helper.getReader())
             val obj = root.asJsonObject
             val overlayList = obj.getAsJsonArray("info-overlays")
             if (overlayList != null) {
@@ -124,12 +148,12 @@ object InfoHUDSettings {
             }
         } catch (e: Exception) {
             println("[InfoHUD] Unable to read config file. Using defaults.")
-            overlays.addAll(java.util.List.of(*defaultInfoLines))
+            overlays.addAll(defaultInfoLines)
         }
         return overlays
     }
 
-    private val defaultInfoLines = arrayOf(
+    private val defaultInfoLines = listOf(
         InfoLineRegistry.FPS,
         InfoLineRegistry.LOCATION,
         InfoLineRegistry.BLOCK,
@@ -139,4 +163,23 @@ object InfoHUDSettings {
         InfoLineRegistry.TARGETED_BLOCK,
         InfoLineRegistry.TARGETED_FLUID
     )
+
+    private class DefaultFileHelper: FileHelper {
+        override fun getReader(): Reader {
+            return file.toFile().reader()
+        }
+        override fun getWriter(): Writer {
+            return file.toFile().writer()
+        }
+    }
+    companion object {
+        private val file: Path by lazy {
+            FabricLoader.getInstance().configDir.resolve("infohud.json")
+        }
+
+        val INSTANCE: InfoHUDSettings by lazy {
+            InfoHUDSettings(DefaultFileHelper())
+        }
+    }
+
 }
