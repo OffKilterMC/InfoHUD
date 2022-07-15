@@ -20,12 +20,12 @@ import net.minecraft.commands.CommandBuildContext
 import net.minecraft.network.FriendlyByteBuf
 import offkilter.infohud.InfoHUDNetworking
 import offkilter.infohud.client.command.InfoHUDClientCommand
-import offkilter.infohud.infoline.InfoLineRegistry
 import offkilter.infohud.client.screen.InfoHUDOptionsScreen
 import offkilter.infohud.infoline.InfoLine
+import offkilter.infohud.infoline.InfoLineRegistry
 
 @Environment(EnvType.CLIENT)
-class InfoHUDClient : ClientModInitializer, InfoHUDSettings.Listener {
+class InfoHUDClient : ClientModInitializer,InfoHUDSettings.Listener {
     override fun onInitializeClient() {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource?>, _: CommandBuildContext ->
             InfoHUDClientCommand.register(dispatcher)
@@ -59,7 +59,7 @@ class InfoHUDClient : ClientModInitializer, InfoHUDSettings.Listener {
 
     override fun infoLineAdded(infoLine: InfoLine) {
         if (infoLine == InfoLineRegistry.TICK_PERF) {
-            syncTickPerfEnabled()
+           syncTickPerfEnabled()
         } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
             syncServerLight()
         }
@@ -67,7 +67,7 @@ class InfoHUDClient : ClientModInitializer, InfoHUDSettings.Listener {
 
     override fun infoLineRemoved(infoLine: InfoLine) {
         if (infoLine == InfoLineRegistry.TICK_PERF) {
-            syncTickPerfEnabled()
+           syncTickPerfEnabled()
         } else if (infoLine == InfoLineRegistry.SERVER_LIGHT) {
             syncServerLight()
         }
@@ -91,7 +91,12 @@ class InfoHUDClient : ClientModInitializer, InfoHUDSettings.Listener {
                     ClientPlayNetworking.registerReceiver(InfoHUDNetworking.TICK_PERF) { client: Minecraft, _: ClientPacketListener?, buf: FriendlyByteBuf, _: PacketSender? ->
                         val mspt = buf.readLong()
                         val tps = buf.readLong()
-                        client.execute { PerfCounters.setPerfInfo(mspt, tps) }
+                        client.execute {
+                           PerfCounters.setPerfInfo(
+                                mspt,
+                                tps
+                            )
+                        }
                     }
                 } else {
                     ClientPlayNetworking.unregisterReceiver(InfoHUDNetworking.TICK_PERF)

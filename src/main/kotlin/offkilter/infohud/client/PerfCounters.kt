@@ -16,8 +16,8 @@ object PerfCounters {
         private set
 
     fun setPerfInfo(mspt: Long, tps: Long) {
-        this.mspt = mspt
-        this.tps = tps
+        PerfCounters.mspt = mspt
+        PerfCounters.tps = tps
     }
 
     fun updateFPS() {
