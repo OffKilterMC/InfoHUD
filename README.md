@@ -9,6 +9,9 @@ This mod displays information you would only normally see on your F3 screen at a
 - Lighting (client and server)
 - Server Tick Performance
 - Targeted block information
+- Local Difficulty
+- Mood
+- Elytra Status
 
 There will be more added over time.
 
@@ -29,4 +32,4 @@ The tick performance shows ticks per second (TPS) and milliseconds per tick (MSP
 
 While you can see some info on the "server light" line even without the mod being installed on the server, the key piece of info (darkness) needs to come from the server as it is not replicated to the client. With this info, you will get accurate light levels when it gets dark, etc. You can use this to find out the real effective light level for trying to ensure that mobs will spawn in a farm, etc.
 
-Remember that showing this info does tax the server, even if only a little bit, so you may want to use this sparingly. When they are not being used by any client, the server cost is pretty much zero.
+Remember that showing this info does tax the server, even if only a little, so you may want to use this sparingly. When they are not being used by any client, the server cost is pretty much zero.

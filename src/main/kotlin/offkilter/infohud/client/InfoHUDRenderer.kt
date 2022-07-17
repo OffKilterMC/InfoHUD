@@ -1,6 +1,5 @@
 package offkilter.infohud.client
 
-import com.google.common.base.Strings
 import com.google.common.collect.Lists
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.datafixers.util.Either
@@ -9,6 +8,7 @@ import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.ChunkPos
@@ -85,7 +85,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft): GuiComponent() {
         updateChunkPos(blockPos)
         val env = InfoLineEnvironment(minecraft, level, blockPos, camera, getClientChunk(), getServerChunk())
 
-        val list: MutableList<String> = Lists.newArrayList()
+        val list: MutableList<Component> = Lists.newArrayList()
         for (infoLine in InfoHUDSettings.INSTANCE.currentInfoLines) {
             val result = infoLine.getInfoString(env)
             if (result != null) {
@@ -97,7 +97,6 @@ class InfoHUDRenderer(private val minecraft: Minecraft): GuiComponent() {
         poseStack.scale(0.5f, 0.5f, 1.0f)
         for (i in list.indices) {
             val string = list[i]
-            if (Strings.isNullOrEmpty(string)) continue
             val j = font.lineHeight + 1
             val k = font.width(string)
             val l = 5

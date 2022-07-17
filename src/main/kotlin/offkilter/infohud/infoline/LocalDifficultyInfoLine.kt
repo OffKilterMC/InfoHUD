@@ -1,5 +1,6 @@
 package offkilter.infohud.infoline
 
+import net.minecraft.network.chat.Component
 import net.minecraft.world.DifficultyInstance
 import java.util.*
 
@@ -9,7 +10,7 @@ class LocalDifficultyInfoLine : InfoLine {
     override val description = "offkilter.infohud.localdifficulty.desc"
     override val category = SettingsCategory.GAMEPLAY
 
-    override fun getInfoString(env: InfoLineEnvironment): String? {
+    override fun getInfoString(env: InfoLineEnvironment): Component? {
         val blockPos = env.blockPos
         val level = env.level
         val serverChunk = env.serverChunk
@@ -21,12 +22,14 @@ class LocalDifficultyInfoLine : InfoLine {
                 l = serverChunk.inhabitedTime
             }
             val difficultyInstance = DifficultyInstance(level.difficulty, level.dayTime, l, h)
-            return String.format(
-                Locale.ROOT,
-                "Local Difficulty: %.2f | %.2f (Day %d)",
-                java.lang.Float.valueOf(difficultyInstance.effectiveDifficulty),
-                java.lang.Float.valueOf(difficultyInstance.specialMultiplier),
-                level.dayTime / 24000L
+            return Component.literal(
+                String.format(
+                    Locale.ROOT,
+                    "Local Difficulty: %.2f | %.2f (Day %d)",
+                    java.lang.Float.valueOf(difficultyInstance.effectiveDifficulty),
+                    java.lang.Float.valueOf(difficultyInstance.specialMultiplier),
+                    level.dayTime / 24000L
+                )
             )
         } else {
             return null
