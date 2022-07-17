@@ -92,3 +92,7 @@ compileTestKotlin {
         jvmTarget = "17"
     }
 }
+
+loom {
+    accessWidenerPath = file("src/main/resources/infohud.accesswidener")
+}
