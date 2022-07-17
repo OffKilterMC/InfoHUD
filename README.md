@@ -11,8 +11,8 @@ This mod displays information you would only normally see on your F3 screen at a
 - Targeted block information
 - Local Difficulty
 - Mood
-- Elytra Status
-- Armor Status (includes Elytra as chestplate value)
+- Elytra Status (if this is all you care about)
+- Armor Status (if you care about all armor)
 
 There will be more added over time.
 
@@ -26,7 +26,12 @@ If the settings screen is not your bag, you can also use the `infohud` client-si
 
 This is mostly written in **Kotlin**. As such, you must be sure to install the "Fabric Language Kotlin" mod for this to work.
 
-## Optional Server-based Info
+## Notes
+- Armor and Elytra lines display the percentages in the same colors as the bars that show remaining durability in the UI
+- Targeted block information lines will hide if nothing is currently in range to target
+- Elytra information hides if you are not wearing an Elytra
+
+### Optional Server-based Info
 There are 2 server-based info lines that can be shown: Server light and Server tick performance. For these to be functional, you must have InfoHUD installed on the server as well. If you don't, you'll simply get no information from these. Single player (integrated server) works fine.
 
 The tick performance shows ticks per second (TPS) and milliseconds per tick (MSPT). These are computed on the server. If you have the carpet mod installed, these will still work correctly. You may notice a bit of drift (sometime you will see 21 TPS, etc.), but it is fairly accurate.
