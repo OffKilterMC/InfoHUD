@@ -39,7 +39,7 @@ class InfoHUDClient : ClientModInitializer,InfoHUDSettings.Listener {
             })
         val hotKey = KeyBindingHelper.registerKeyBinding(
             KeyMapping(
-                "key.offkilter.microhud",
+                "key.offkilter.infohud",
                 InputConstants.KEY_H,
                 "key.categories.misc"
             )

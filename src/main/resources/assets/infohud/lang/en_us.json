@@ -26,5 +26,7 @@
   "offkilter.infohud.mood.name": "Mood",
   "offkilter.infohud.mood.desc": "When this reaches 100%, it plays a random ambient sound.",
   "offkilter.infohud.elytra.name": "Elytra Status",
-  "offkilter.infohud.elytra.desc": "Show how much durability your Elytra has."
+  "offkilter.infohud.elytra.desc": "Show how much durability your Elytra has.",
+  "offkilter.infohud.armor.name": "Armor Status",
+  "offkilter.infohud.armor.desc": "Show how much durability all your armor pieces have."
 }
