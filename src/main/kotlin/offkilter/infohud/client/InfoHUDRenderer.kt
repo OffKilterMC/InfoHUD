@@ -7,7 +7,7 @@ import com.mojang.datafixers.util.Either
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.components.DebugScreenOverlay
+import net.minecraft.client.gui.GuiComponent
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure
 import net.minecraft.server.level.ServerLevel
@@ -19,7 +19,7 @@ import offkilter.infohud.infoline.InfoLineEnvironment
 import java.util.concurrent.CompletableFuture
 
 @Environment(value = EnvType.CLIENT)
-class InfoHUDRenderer(private val minecraft: Minecraft) {
+class InfoHUDRenderer(private val minecraft: Minecraft): GuiComponent() {
     private val font = minecraft.font
     private var lastChunkPos: ChunkPos? = null
     private var clientChunk: LevelChunk? = null
@@ -102,7 +102,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) {
             val k = font.width(string)
             val l = 5
             val m = 5 + j * i
-            DebugScreenOverlay.fill(poseStack, l - 1, m - 1, l + k + 1, m + j - 1, -1873784752)
+            fill(poseStack, l - 1, m - 1, l + k + 1, m + j - 1, 0x90505050.toInt())
             font.draw(poseStack, string, l.toFloat(), m.toFloat(), 0xE0E0E0)
         }
         poseStack.popPose()

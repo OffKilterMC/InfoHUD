@@ -28,4 +28,5 @@ object InfoLineRegistry {
     val TICK_PERF = register(TickPerfInfoLine())
     val LOCAL_DIFFICULTY = register(LocalDifficultyInfoLine())
     val MOOD = register(MoodInfoLine())
+    val ELYTRA = register(ElytraInfoLine())
 }
