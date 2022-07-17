@@ -8,6 +8,7 @@
 - Fixed incorrect localized string key for the hot key
 - Major internal refactor to be more scalable and allow color.
 - Added unit tests for the settings component
+- Added more info to the FPS line
 
 ## Version 1.0 
 - Initial release
