@@ -12,6 +12,7 @@ This mod displays information you would only normally see on your F3 screen at a
 - Local Difficulty
 - Mood
 - Elytra Status
+- Armor Status (includes Elytra as chestplate value)
 
 There will be more added over time.
 

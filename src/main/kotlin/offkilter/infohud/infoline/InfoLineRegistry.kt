@@ -29,4 +29,5 @@ object InfoLineRegistry {
     val LOCAL_DIFFICULTY = register(LocalDifficultyInfoLine())
     val MOOD = register(MoodInfoLine())
     val ELYTRA = register(ElytraInfoLine())
+    val ARMOR = register(ArmorInfoLine())
 }
