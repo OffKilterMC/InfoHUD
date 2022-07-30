@@ -2,6 +2,7 @@
 
 ## Version 1.2
 - Added Game time, a clock that shows the current time in the game. Will not show in the Nether or End dimensions to match the way a normal clock item would.
+- Added speed in m/s. Updates every 0.5 seconds.
 
 ## Version 1.1
 - Added local difficulty

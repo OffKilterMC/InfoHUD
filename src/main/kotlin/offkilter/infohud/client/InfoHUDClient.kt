@@ -52,6 +52,10 @@ class InfoHUDClient : ClientModInitializer,InfoHUDSettings.Listener {
                     showHUD = !showHUD
                 }
             }
+
+            client.player?.let {
+                PerfCounters.updateSpeed(it)
+            }
         })
 
         InfoHUDSettings.INSTANCE.addListener(this)
