@@ -30,4 +30,5 @@ object InfoLineRegistry {
     val MOOD = register(MoodInfoLine())
     val ELYTRA = register(ElytraInfoLine())
     val ARMOR = register(ArmorInfoLine())
+    val GAME_CLOCK = register(GameClockInfoLine())
 }

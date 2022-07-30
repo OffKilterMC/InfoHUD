@@ -28,5 +28,7 @@
   "offkilter.infohud.elytra.name": "Elytra Status",
   "offkilter.infohud.elytra.desc": "Show how much durability your Elytra has.",
   "offkilter.infohud.armor.name": "Armor Status",
-  "offkilter.infohud.armor.desc": "Show how much durability all your armor pieces have."
+  "offkilter.infohud.armor.desc": "Show how much durability all your armor pieces have.",
+  "offkilter.infohud.gameclock.name": "Game Clock",
+  "offkilter.infohud.gameclock.desc": "Show the current world time when in the Overworld."
 }

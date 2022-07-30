@@ -1,5 +1,8 @@
 # InfoHUD Changelog
 
+## Version 1.2
+- Added Game time, a clock that shows the current time in the game. Will not show in the Nether or End dimensions to match the way a normal clock item would.
+
 ## Version 1.1
 - Added local difficulty
 - Added mood %
