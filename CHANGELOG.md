@@ -3,6 +3,7 @@
 ## Version 1.2
 - Added Game time, a clock that shows the current time in the game. Will not show in the Nether or End dimensions to match the way a normal clock item would.
 - Added speed in m/s. Updates every 0.5 seconds.
+- Changed sizing to effectively always use gui scale 2 except for gui scale 1 for now. This fixes some legibility issues. Eventually there may be a control in settings.
 
 ## Version 1.1
 - Added local difficulty

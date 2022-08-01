@@ -19,7 +19,7 @@ import offkilter.infohud.infoline.InfoLineEnvironment
 import java.util.concurrent.CompletableFuture
 
 @Environment(value = EnvType.CLIENT)
-class InfoHUDRenderer(private val minecraft: Minecraft): GuiComponent() {
+class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
     private val font = minecraft.font
     private var lastChunkPos: ChunkPos? = null
     private var clientChunk: LevelChunk? = null
@@ -67,7 +67,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft): GuiComponent() {
                         }
                 }
             } ?: run {
-               CompletableFuture.completedFuture(getClientChunk())
+                CompletableFuture.completedFuture(getClientChunk())
             }
         }
         return serverChunk?.getNow(null)
@@ -94,7 +94,16 @@ class InfoHUDRenderer(private val minecraft: Minecraft): GuiComponent() {
         }
 
         poseStack.pushPose()
-        poseStack.scale(0.5f, 0.5f, 1.0f)
+
+        // Put everything except scale 1 at effectively scale 2
+        if (minecraft.window.guiScale > 1.0) {
+            poseStack.scale(
+                2 / minecraft.window.guiScale.toFloat(),
+                2 / minecraft.window.guiScale.toFloat(),
+                2 / minecraft.window.guiScale.toFloat()
+            )
+        }
+        
         for (i in list.indices) {
             val string = list[i]
             val j = font.lineHeight + 1
