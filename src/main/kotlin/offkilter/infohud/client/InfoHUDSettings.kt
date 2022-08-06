@@ -22,13 +22,47 @@ class InfoHUDSettings(private val helper: FileHelper) {
         DOWN
     }
 
+    enum class Position(val key: String) {
+        TOP_LEFT("top-left"),
+        TOP_RIGHT("top-right")
+    }
+
     interface Listener {
         fun infoLineAdded(infoLine: InfoLine)
         fun infoLineRemoved(infoLine: InfoLine)
         fun infoLinesChanged()
     }
 
+    data class Config(var position: Position = defaultPosition,
+                      var scale: Int = defaultScale,
+                      val infoLines:MutableList<InfoLine> = defaultInfoLines.toMutableList())
+
     private val listeners: MutableSet<Listener> = mutableSetOf<Listener>()
+
+    var scale: Int
+        get() = config.scale
+        set(value) = setScaleInternal(value)
+
+    var position: Position
+        get() = config.position
+        set(value) = setPositionInternal(value)
+
+    val infoLines: List<InfoLine>
+        get() = config.infoLines
+
+    private val config: Config by lazy {
+        load() ?: Config()
+    }
+
+    private fun setScaleInternal(value: Int) {
+        config.scale = value
+        save()
+    }
+
+    private fun setPositionInternal(value: Position) {
+        config.position = value
+        save()
+    }
 
     fun addListener(listener: Listener) {
         listeners.add(listener)
@@ -56,16 +90,9 @@ class InfoHUDSettings(private val helper: FileHelper) {
         }
     }
 
-    private val mutableInfoLines: MutableList<InfoLine> by lazy {
-        readInfoOverlays()
-    }
-
-    val currentInfoLines: List<InfoLine>
-        get() = mutableInfoLines
-
     fun add(infoLine: InfoLine) {
-        if (!mutableInfoLines.contains(infoLine)) {
-            mutableInfoLines.add(infoLine)
+        if (!config.infoLines.contains(infoLine)) {
+            config.infoLines.add(infoLine)
             save()
 
             announceAdded(infoLine)
@@ -73,8 +100,8 @@ class InfoHUDSettings(private val helper: FileHelper) {
     }
 
     fun remove(infoLine: InfoLine) {
-        if (mutableInfoLines.contains(infoLine)) {
-            mutableInfoLines.remove(infoLine)
+        if (config.infoLines.contains(infoLine)) {
+            config.infoLines.remove(infoLine)
             save()
 
             announceRemoved(infoLine)
@@ -82,7 +109,7 @@ class InfoHUDSettings(private val helper: FileHelper) {
     }
 
     fun move(infoLine: InfoLine, direction: Direction) {
-        val idx = mutableInfoLines.indexOf(infoLine)
+        val idx = config.infoLines.indexOf(infoLine)
         if (idx == -1) {
             return
         }
@@ -90,17 +117,17 @@ class InfoHUDSettings(private val helper: FileHelper) {
         when (direction) {
             Direction.UP -> {
                 if (idx != 0) {
-                    val temp = mutableInfoLines[idx - 1]
-                    mutableInfoLines[idx - 1] = infoLine
-                    mutableInfoLines[idx] = temp
+                    val temp = config.infoLines[idx - 1]
+                    config.infoLines[idx - 1] = infoLine
+                    config.infoLines[idx] = temp
                     save()
                 }
             }
             Direction.DOWN -> {
-                if (idx < (mutableInfoLines.size - 1)) {
-                    val temp = mutableInfoLines[idx + 1]
-                    mutableInfoLines[idx + 1] = infoLine
-                    mutableInfoLines[idx] = temp
+                if (idx < (config.infoLines.size - 1)) {
+                    val temp = config.infoLines[idx + 1]
+                    config.infoLines[idx + 1] = infoLine
+                    config.infoLines[idx] = temp
                     save()
                 }
             }
@@ -108,17 +135,26 @@ class InfoHUDSettings(private val helper: FileHelper) {
     }
 
     fun setActiveInfoLines(infoLines: List<InfoLine>) {
-        mutableInfoLines.clear()
-        mutableInfoLines.addAll(infoLines)
+        config.infoLines.clear()
+        config.infoLines.addAll(infoLines)
         save()
         announceChanged()
+    }
+
+    private fun positionToJsonPrimitive(): JsonPrimitive {
+        return when(config.position) {
+            Position.TOP_LEFT -> JsonPrimitive("top-left")
+            Position.TOP_RIGHT -> JsonPrimitive("top-right")
+        }
     }
 
     private fun save() {
         val root = JsonObject()
         val list = JsonArray()
-        mutableInfoLines.forEach { t -> list.add(t.key) }
-        root.add("info-overlays", list)
+        config.infoLines.forEach { t -> list.add(t.key) }
+        root.add(overlayKey, list)
+        root.add(scaleKey, JsonPrimitive(config.scale))
+        root.add(positionKey, positionToJsonPrimitive())
 
         try {
             helper.getWriter().use { writer ->
@@ -130,39 +166,54 @@ class InfoHUDSettings(private val helper: FileHelper) {
         }
     }
 
-    private fun readInfoOverlays(): MutableList<InfoLine> {
+    private fun readAndValidateScale(obj: JsonObject): Int {
+        val scale = obj.getAsJsonPrimitive(scaleKey)?.asInt ?: defaultScale
+        return if (scale < minScale || scale > maxScale) {
+            println("[InfoHUD] Invalid value for scale ($scale). Using default.")
+            defaultScale
+        } else {
+            scale
+        }
+    }
+
+    private fun readAndValidatePosition(obj: JsonObject): Position {
+        return obj.getAsJsonPrimitive(positionKey)?.asString?.let { position ->
+            for (v in Position.values()) {
+                if (position == v.key) {
+                    return v
+                }
+            }
+            println("[InfoHUD] Invalid value for position ($position). Using default.")
+            return defaultPosition
+        } ?: run {
+            defaultPosition
+        }
+    }
+
+    private fun load(): Config? {
         val overlays: MutableList<InfoLine> = ArrayList()
         try {
             val root = JsonParser.parseReader(helper.getReader())
             val obj = root.asJsonObject
-            val overlayList = obj.getAsJsonArray("info-overlays")
+            val overlayList = obj.getAsJsonArray(overlayKey)
             if (overlayList != null) {
                 for (e in overlayList) {
                     val value = e.asJsonPrimitive.asString
                     InfoLineRegistry.infoLineWithKey(value)?.let { infoLine ->
                         overlays.add(infoLine)
                     } ?: run {
-                        println("[InfoHUD] Ignoring unknown info name: $value")
+                        println("[InfoHUD] Ignoring unknown info-overlay name: $value")
                     }
                 }
             }
+            val scale = readAndValidateScale(obj)
+            val position = readAndValidatePosition(obj)
+            return Config(scale = scale, position = position, infoLines = overlays)
         } catch (e: Exception) {
-            println("[InfoHUD] Unable to read config file. Using defaults.")
-            overlays.addAll(defaultInfoLines)
+            println("[InfoHUD] Unable to read config file. Using defaults. (${e.message})")
         }
-        return overlays
+        return null
     }
-
-    private val defaultInfoLines = listOf(
-        InfoLineRegistry.FPS,
-        InfoLineRegistry.LOCATION,
-        InfoLineRegistry.BLOCK,
-        InfoLineRegistry.DIRECTION,
-        InfoLineRegistry.BIOME,
-        InfoLineRegistry.CLIENT_LIGHT,
-        InfoLineRegistry.TARGETED_BLOCK,
-        InfoLineRegistry.TARGETED_FLUID
-    )
 
     private class DefaultFileHelper: FileHelper {
         override fun getReader(): Reader {
@@ -173,6 +224,25 @@ class InfoHUDSettings(private val helper: FileHelper) {
         }
     }
     companion object {
+        // our json keys
+        private const val overlayKey = "info-overlays"
+        private const val scaleKey = "scale"
+        private const val positionKey = "position"
+        private val defaultPosition = Position.TOP_LEFT
+        private const val defaultScale = 2
+        private const val minScale = 0
+        private const val maxScale = 6
+        private val defaultInfoLines = listOf(
+            InfoLineRegistry.FPS,
+            InfoLineRegistry.LOCATION,
+            InfoLineRegistry.BLOCK,
+            InfoLineRegistry.DIRECTION,
+            InfoLineRegistry.BIOME,
+            InfoLineRegistry.CLIENT_LIGHT,
+            InfoLineRegistry.TARGETED_BLOCK,
+            InfoLineRegistry.TARGETED_FLUID
+        )
+
         private val file: Path by lazy {
             FabricLoader.getInstance().configDir.resolve("infohud.json")
         }

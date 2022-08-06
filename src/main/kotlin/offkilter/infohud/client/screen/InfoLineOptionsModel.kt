@@ -12,7 +12,7 @@ class InfoLineOptionsModel(private val onListChanged: Runnable) {
 
     init {
         val all = InfoLineRegistry.allInfoLines.sortedBy { it.name }
-        val current = InfoHUDSettings.INSTANCE.currentInfoLines
+        val current = InfoHUDSettings.INSTANCE.infoLines
 
         selectedInfoLines.addAll(current)
 

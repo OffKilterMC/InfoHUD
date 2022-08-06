@@ -1,0 +1,16 @@
+{
+  "scale": [99],
+  "position": {"whatevs":  10 },
+  "info-overlays": [
+    "fps",
+    "location",
+    "block",
+    "direction",
+    "biome",
+    "client-light",
+    "targeted-block",
+    "targeted-fluid",
+    "tick-perf",
+    "local-difficulty"
+  ]
+}

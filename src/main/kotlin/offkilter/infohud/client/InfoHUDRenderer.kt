@@ -86,7 +86,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         val env = InfoLineEnvironment(minecraft, level, blockPos, camera, getClientChunk(), getServerChunk())
 
         val list: MutableList<Component> = Lists.newArrayList()
-        for (infoLine in InfoHUDSettings.INSTANCE.currentInfoLines) {
+        for (infoLine in InfoHUDSettings.INSTANCE.infoLines) {
             val result = infoLine.getInfoString(env)
             if (result != null) {
                 list.add(result)
