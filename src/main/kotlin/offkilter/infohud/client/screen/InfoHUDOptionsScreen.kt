@@ -56,9 +56,11 @@ class InfoHUDOptionsScreen(
         infoLineList: InfoLineList?,
         options: List<InfoLineOptionsModel.Option>
     ) {
-        infoLineList!!.children().clear()
-        options.forEach { item ->
-            infoLineList.children().add(InfoLineEntry(this.minecraft!!, this, infoLineList, item))
+        infoLineList?.let { list ->
+            list.children().clear()
+            options.forEach { item ->
+                list.children().add(InfoLineEntry(this.minecraft!!, this, list, item))
+            }
         }
     }
 

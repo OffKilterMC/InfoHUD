@@ -24,6 +24,8 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
     private var lastChunkPos: ChunkPos? = null
     private var clientChunk: LevelChunk? = null
     private var serverChunk: CompletableFuture<LevelChunk>? = null
+    private var lastGuiScale = -1.0
+    private var lastScale = -1
 
     private fun updateChunkPos(pos: BlockPos) {
         val chunkPos = ChunkPos(pos)
@@ -73,6 +75,26 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         return serverChunk?.getNow(null)
     }
 
+    private fun reallyDetermineScale(): Int {
+        val scale = InfoHUDSettings.INSTANCE.scale
+        if (scale != 0) {
+            // if our desired scale is larger than we'd normally allow right now,
+            // cap it to the max
+            val maxScale = minecraft.window.calculateScale(0, minecraft.isEnforceUnicode)
+            if (scale > maxScale) {
+                return maxScale
+            }
+        }
+        return scale
+    }
+
+    private fun determineScale(): Int {
+        if (lastGuiScale != minecraft.window.guiScale) {
+            lastScale = reallyDetermineScale()
+        }
+        return lastScale
+    }
+
     fun render(poseStack: PoseStack) {
         val camera = minecraft.getCameraEntity()
         val level = minecraft.level
@@ -95,15 +117,18 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
         poseStack.pushPose()
 
-        // Put everything except scale 1 at effectively scale 2
-        if (minecraft.window.guiScale > 1.0) {
-            poseStack.scale(
-                2 / minecraft.window.guiScale.toFloat(),
-                2 / minecraft.window.guiScale.toFloat(),
-                2 / minecraft.window.guiScale.toFloat()
-            )
+        val scale = determineScale()
+        if (scale != 0) {
+            val guiScale = minecraft.window.guiScale.toFloat()
+            if (guiScale.toInt() != scale) {
+                poseStack.scale(
+                    scale / guiScale,
+                    scale / guiScale,
+                    scale / guiScale
+                )
+            }
         }
-        
+
         for (i in list.indices) {
             val string = list[i]
             val j = font.lineHeight + 1
