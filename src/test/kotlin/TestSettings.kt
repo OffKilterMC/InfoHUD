@@ -1,21 +1,36 @@
 import offkilter.infohud.client.InfoHUDSettings
 import offkilter.infohud.infoline.InfoLineRegistry
-import java.io.*
+import java.io.File
+import java.io.Reader
+import java.io.StringWriter
+import java.io.Writer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TestSettings {
-    private inner class TestFileAccess(private val name: String) : InfoHUDSettings.FileHelper {
-        val writer = StringWriter()
+    private fun resourceFileSpec(name: String): Lazy<File> {
+        return lazy {
+            val url = Thread.currentThread().contextClassLoader.getResource("$name.json")
+            File(url!!.path)
+        }
+    }
 
+    private fun tempFileSpec(name: String) : Lazy<File> {
+        return lazy {
+            val tempFile: File = File.createTempFile(name, ".json")
+            tempFile.deleteOnExit()
+            tempFile
+        }
+    }
+
+    private open inner class TestFileAccess(val readFile: Lazy<File>, val writeFile: Lazy<File>? = null) :
+        InfoHUDSettings.FileHelper {
         override fun getReader(): Reader {
-            val url = Thread.currentThread().contextClassLoader.getResource(name)
-            val file = File(url!!.path)
-            return file.reader()
+            return readFile.value.reader()
         }
 
         override fun getWriter(): Writer {
-           return writer
+            return writeFile?.value?.writer() ?: StringWriter()
         }
     }
 
@@ -32,7 +47,7 @@ class TestSettings {
 
     @Test
     fun testBasicFileReading() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val items = settings.infoLines.map { it.key }
 
@@ -54,7 +69,7 @@ class TestSettings {
 
     @Test
     fun testDefaults() {
-        val settings = InfoHUDSettings(TestFileAccess("notthere"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("notthere")))
 
         val items = settings.infoLines.map { it.key }
 
@@ -65,7 +80,7 @@ class TestSettings {
 
     @Test
     fun testDropsUnknownKeys() {
-        val settings = InfoHUDSettings(TestFileAccess("badkeys.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("badkeys")))
 
         val items = settings.infoLines.map { it.key }
 
@@ -84,7 +99,7 @@ class TestSettings {
 
     @Test
     fun testInvalidJSON() {
-        val settings = InfoHUDSettings(TestFileAccess("badfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("badfile")))
 
         val items = settings.infoLines.map { it.key }
 
@@ -96,7 +111,7 @@ class TestSettings {
 
     @Test
     fun testTryMovingTopItemUp() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val origFirst = settings.infoLines.first()
 
@@ -109,7 +124,7 @@ class TestSettings {
 
     @Test
     fun testTryMovingBottomItemDown() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val origLast = settings.infoLines.last()
 
@@ -122,7 +137,7 @@ class TestSettings {
 
     @Test
     fun testTryMovingTopItemDown() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val secondItem = settings.infoLines[1]
 
@@ -135,7 +150,7 @@ class TestSettings {
 
     @Test
     fun testTryMovingBottomItemUp() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val secondToLastItem = settings.infoLines[settings.infoLines.size - 2]
         // moving up should swap with second-to-last
@@ -147,7 +162,7 @@ class TestSettings {
 
     @Test
     fun testAdd() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         settings.add(InfoLineRegistry.MOOD)
         val lastItemKey = settings.infoLines.last().key
@@ -156,7 +171,7 @@ class TestSettings {
 
     @Test
     fun testAddExistingShouldFail() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("test")))
 
         val count = settings.infoLines.size
 
@@ -167,7 +182,7 @@ class TestSettings {
 
     @Test
     fun testRemove() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         settings.remove(InfoLineRegistry.FPS)
         assertEquals(-1, settings.infoLines.indexOf(InfoLineRegistry.FPS))
@@ -175,7 +190,7 @@ class TestSettings {
 
     @Test
     fun testRemoveNonexistentShouldFail() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val count = settings.infoLines.size
 
@@ -185,7 +200,7 @@ class TestSettings {
 
     @Test
     fun testSetActiveInfoLines() {
-        val settings = InfoHUDSettings(TestFileAccess("testfile.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("testfile")))
 
         val itemsToSet = listOf(
             InfoLineRegistry.BIOME,
@@ -198,19 +213,29 @@ class TestSettings {
 
     @Test
     fun testBadScaleAndPositionValue() {
-        val settings = InfoHUDSettings(TestFileAccess("badvalues.json"))
+        val settings = InfoHUDSettings(TestFileAccess(resourceFileSpec("badvalues")))
 
         // should be the default
         assertEquals(settings.scale, 2)
         assertEquals(settings.position, InfoHUDSettings.Position.TOP_LEFT)
     }
 
-    @Test
-    fun testBadScaleAndPositionValueType() {
-        val settings = InfoHUDSettings(TestFileAccess("badvaluetypes.json"))
 
-        // should be the default
-        assertEquals(settings.scale, 2)
-        assertEquals(settings.position, InfoHUDSettings.Position.TOP_LEFT)
+    @Test
+    fun testSetScaleAndPositionAndReReadFile() {
+        val tempFileSpec = tempFileSpec("InfoHUDSettings")
+        val settings = InfoHUDSettings(
+            TestFileAccess(
+                resourceFileSpec("testfile"),
+                tempFileSpec
+            )
+        )
+
+        settings.scale = 4
+        settings.position = InfoHUDSettings.Position.TOP_RIGHT
+
+        val settings2 = InfoHUDSettings(TestFileAccess(tempFileSpec, null))
+        assertEquals(4, settings2.scale)
+        assertEquals(InfoHUDSettings.Position.TOP_RIGHT, settings2.position)
     }
 }
