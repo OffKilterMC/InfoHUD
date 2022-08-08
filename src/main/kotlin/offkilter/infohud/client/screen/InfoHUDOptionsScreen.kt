@@ -4,7 +4,6 @@
 package offkilter.infohud.client.screen
 
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.logging.LogUtils
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.gui.components.Button
@@ -22,7 +21,6 @@ class InfoHUDOptionsScreen(
     private val model = InfoLineOptionsModel(this::populateLists)
 
     companion object {
-        val LOGGER = LogUtils.getLogger()
         private const val LIST_WIDTH = 200
         private const val DONE_BUTTON_WIDTH = 150
     }

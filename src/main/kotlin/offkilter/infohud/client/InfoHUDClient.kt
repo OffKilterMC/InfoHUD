@@ -20,7 +20,7 @@ import net.minecraft.commands.CommandBuildContext
 import net.minecraft.network.FriendlyByteBuf
 import offkilter.infohud.InfoHUDNetworking
 import offkilter.infohud.client.command.InfoHUDClientCommand
-import offkilter.infohud.client.screen.InfoHUDOptionsScreen
+import offkilter.infohud.client.screen.InfoHUDSettingsScreen
 import offkilter.infohud.infoline.InfoLine
 import offkilter.infohud.infoline.InfoLineRegistry
 
@@ -47,7 +47,7 @@ class InfoHUDClient : ClientModInitializer,InfoHUDSettings.Listener {
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: Minecraft ->
             while (hotKey.consumeClick()) {
                 if (Screen.hasControlDown()) {
-                    client.setScreen(InfoHUDOptionsScreen(null))
+                    client.setScreen(InfoHUDSettingsScreen(null))
                 } else {
                     showHUD = !showHUD
                 }
