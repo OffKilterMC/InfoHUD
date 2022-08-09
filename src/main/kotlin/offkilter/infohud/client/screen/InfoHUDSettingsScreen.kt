@@ -50,7 +50,6 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
                 InfoHUDSettings.INSTANCE.scale = value
             })
 
-
         positionButton = addRenderableWidget(CycleButton.builder<InfoHUDSettings.Position> { obj -> stringifyPosition(obj) }
             .withValues(InfoHUDSettings.Position.values().asList())
             .withInitialValue(InfoHUDSettings.INSTANCE.position)

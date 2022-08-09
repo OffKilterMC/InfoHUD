@@ -118,6 +118,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         poseStack.pushPose()
 
         val scale = determineScale()
+        var screenWidth = minecraft.window.guiScaledWidth
         if (scale != 0) {
             val guiScale = minecraft.window.guiScale.toFloat()
             if (guiScale.toInt() != scale) {
@@ -127,17 +128,34 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
                     scale / guiScale
                 )
             }
+            val i = (minecraft.window.width.toDouble() / scale).toInt()
+            screenWidth = if (minecraft.window.width.toDouble() / scale > i.toDouble()) i + 1 else i
         }
 
         for (i in list.indices) {
             val string = list[i]
-            val j = font.lineHeight + 1
-            val k = font.width(string)
-            val l = 5
-            val m = 5 + j * i
-            fill(poseStack, l - 1, m - 1, l + k + 1, m + j - 1, 0x90505050.toInt())
-            font.draw(poseStack, string, l.toFloat(), m.toFloat(), 0xE0E0E0)
+            val height = font.lineHeight + 1
+            val width = font.width(string)
+
+            when (InfoHUDSettings.INSTANCE.position) {
+                InfoHUDSettings.Position.TOP_LEFT -> {
+                    val left = MARGIN
+                    val top = MARGIN + height * i
+                    fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
+                    font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
+                }
+                InfoHUDSettings.Position.TOP_RIGHT -> {
+                    val left = screenWidth - (MARGIN + width)
+                    val top = MARGIN + height * i
+                    fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
+                    font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
+                }
+            }
         }
         poseStack.popPose()
+    }
+
+    companion object {
+        private const val MARGIN = 5
     }
 }
