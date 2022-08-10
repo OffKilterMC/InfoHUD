@@ -141,20 +141,13 @@ class InfoHUDSettings(private val helper: FileHelper) {
         announceChanged()
     }
 
-    private fun positionToJsonPrimitive(): JsonPrimitive {
-        return when(config.position) {
-            Position.TOP_LEFT -> JsonPrimitive("top-left")
-            Position.TOP_RIGHT -> JsonPrimitive("top-right")
-        }
-    }
-
     private fun save() {
         val root = JsonObject()
         val list = JsonArray()
         config.infoLines.forEach { t -> list.add(t.key) }
         root.add(overlayKey, list)
         root.add(scaleKey, JsonPrimitive(config.scale))
-        root.add(positionKey, positionToJsonPrimitive())
+        root.add(positionKey, JsonPrimitive(config.position.key))
 
         try {
             helper.getWriter().use { writer ->

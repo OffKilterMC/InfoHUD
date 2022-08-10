@@ -1,5 +1,10 @@
 # InfoHUD Changelog
 
+## Version 1.3
+- Reorganized settings screen to allow the following additions.
+- Added ability to set HUD scale to whatever you like. Works similarly to the gui scale in video settings. "Auto" in our case means we follow whatever the gui scale is. The default is 2.
+- Added ability to position HUD at top left (default) or top right.
+
 ## Version 1.2
 - Added Game time, a clock that shows the current time in the game. Will not show in the Nether or End dimensions to match the way a normal clock item would.
 - Added speed in m/s. Updates every 0.5 seconds.

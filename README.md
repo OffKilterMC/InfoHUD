@@ -13,16 +13,17 @@ This mod displays information you would only normally see on your F3 screen at a
 - Mood
 - Elytra Status (if this is all you care about)
 - Armor Status (if you care about all armor)
+- Speed, in m/s
+- Game Clock - simulated in-world time when in the Overworld, hidden otherwise
 
 There will be more added over time.
 
 You can hide and show the HUD by pressing H. This is changeable in the normal Control settings under Miscellaneous.
 
-You can access the HUD settings by holding control and pressing the hotkey (again, H by default). The settings will allow you to choose which lines are visible and in what order they appear.
-
-At present, the location is fixed. The plan would be to allow this to be customized in time, along with adding more choices, as mentioned above.
-
-If the settings screen is not your bag, you can also use the `infohud` client-side command to add/remove or move info lines. I used this for testing before I had a UI written.
+You can access the HUD settings by holding control and pressing the hotkey (again, H by default). The settings will allow you to choose:
+- HUD scale
+- HUD position
+- Which lines are visible and in what order they appear
 
 This is mostly written in **Kotlin**. As such, you must be sure to install the "Fabric Language Kotlin" mod for this to work.
 

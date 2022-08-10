@@ -22,7 +22,7 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
 
     private fun stringifyScale(scale: Int): Component {
         return if (scale == 0) {
-            Component.literal("Auto")
+            Component.translatable("offkilter.infohud.settings.scale.auto")
         } else {
             Component.literal(scale.toString())
         }
@@ -30,8 +30,8 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
 
     private fun stringifyPosition(position: InfoHUDSettings.Position): Component {
         return when (position) {
-            InfoHUDSettings.Position.TOP_LEFT -> Component.literal("Top Left")
-            InfoHUDSettings.Position.TOP_RIGHT -> Component.literal("Top Right")
+            InfoHUDSettings.Position.TOP_LEFT -> Component.translatable("offkilter.infohud.settings.position.topleft")
+            InfoHUDSettings.Position.TOP_RIGHT -> Component.translatable("offkilter.infohud.settings.position.topright")
         }
     }
 
@@ -45,7 +45,7 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
                 40,
                 BUTTON_WIDTH,
                 20,
-                Component.literal("Scale")
+                Component.translatable("offkilter.infohud.settings.scale")
             ) { _: CycleButton<Int>?, value: Int ->
                 InfoHUDSettings.INSTANCE.scale = value
             })
@@ -58,7 +58,7 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
                 40,
                 BUTTON_WIDTH,
                 20,
-                Component.literal("Position")
+                Component.translatable("offkilter.infohud.settings.position")
             ) { _: CycleButton<InfoHUDSettings.Position>?, value: InfoHUDSettings.Position ->
                 InfoHUDSettings.INSTANCE.position = value
             })
@@ -68,7 +68,7 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
             65,
             BUTTON_WIDTH,
             20,
-            Component.literal("Info Lines")
+            Component.translatable("offkilter.infohud.settings.infolines")
         ) {
             minecraft!!.setScreen(InfoHUDOptionsScreen(this))
         })

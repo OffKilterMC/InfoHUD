@@ -1,6 +1,12 @@
 {
   "key.offkilter.infohud": "Toggle InfoHUD",
   "offkilter.infohud.settings.title": "InfoHUD Settings",
+  "offkilter.infohud.settings.scale": "Scale",
+  "offkilter.infohud.settings.scale.auto": "Auto",
+  "offkilter.infohud.settings.position": "Position",
+  "offkilter.infohud.settings.position.topleft": "Top Left",
+  "offkilter.infohud.settings.position.topright": "Top Right",
+  "offkilter.infohud.settings.infolines": "Info Lines",
   "offkilter.infohud.biome.name": "Biome",
   "offkilter.infohud.biome.desc": "Biome information.",
   "offkilter.infohud.block.name": "Block Position",

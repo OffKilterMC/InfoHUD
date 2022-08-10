@@ -75,7 +75,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         return serverChunk?.getNow(null)
     }
 
-    private fun reallyDetermineScale(): Int {
+    private fun reallyDetermineHUDScale(): Int {
         val scale = InfoHUDSettings.INSTANCE.scale
         if (scale != 0) {
             // if our desired scale is larger than we'd normally allow right now,
@@ -88,9 +88,9 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         return scale
     }
 
-    private fun determineScale(): Int {
+    private fun determineHUDScale(): Int {
         if (lastGuiScale != minecraft.window.guiScale) {
-            lastScale = reallyDetermineScale()
+            lastScale = reallyDetermineHUDScale()
         }
         return lastScale
     }
@@ -117,7 +117,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
         poseStack.pushPose()
 
-        val scale = determineScale()
+        val scale = determineHUDScale()
         var screenWidth = minecraft.window.guiScaledWidth
         if (scale != 0) {
             val guiScale = minecraft.window.guiScale.toFloat()
@@ -136,17 +136,16 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
             val string = list[i]
             val height = font.lineHeight + 1
             val width = font.width(string)
+            val top = MARGIN + height * i
 
             when (InfoHUDSettings.INSTANCE.position) {
                 InfoHUDSettings.Position.TOP_LEFT -> {
                     val left = MARGIN
-                    val top = MARGIN + height * i
                     fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
                     font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
                 }
                 InfoHUDSettings.Position.TOP_RIGHT -> {
                     val left = screenWidth - (MARGIN + width)
-                    val top = MARGIN + height * i
                     fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
                     font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
                 }
