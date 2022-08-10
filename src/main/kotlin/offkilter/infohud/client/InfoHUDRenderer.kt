@@ -119,13 +119,13 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
         val scale = determineHUDScale()
         var screenWidth = minecraft.window.guiScaledWidth
+        var hudScale = 1.0f
         if (scale != 0) {
             val guiScale = minecraft.window.guiScale.toFloat()
             if (guiScale.toInt() != scale) {
+                hudScale = scale / guiScale
                 poseStack.scale(
-                    scale / guiScale,
-                    scale / guiScale,
-                    scale / guiScale
+                    hudScale, hudScale, hudScale
                 )
             }
             val i = (minecraft.window.width.toDouble() / scale).toInt()
@@ -136,16 +136,23 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
             val string = list[i]
             val height = font.lineHeight + 1
             val width = font.width(string)
-            val top = MARGIN + height * i
 
             when (InfoHUDSettings.INSTANCE.position) {
                 InfoHUDSettings.Position.TOP_LEFT -> {
+                    val top = MARGIN + height * i
                     val left = MARGIN
                     fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
                     font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
                 }
                 InfoHUDSettings.Position.TOP_RIGHT -> {
+                    var top = MARGIN + height * i
                     val left = screenWidth - (MARGIN + width)
+
+                    // avoid any status icons
+                    if (minecraft.player?.activeEffects?.isEmpty() != true) {
+                        top += (24 / hudScale).toInt()
+                    }
+
                     fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
                     font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
                 }

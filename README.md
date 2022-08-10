@@ -1,22 +1,20 @@
 # InfoHUD
 
-This mod displays information you would only normally see on your F3 screen at all times in the upper left corner. You can see the following information at present:
+This mod displays information you would only normally see on your F3 screen at all times in the upper left/right corner. You can see the following information at present:
 
 - FPS
 - Position
 - Heading/Direction
 - Biome
 - Lighting (client and server)
-- Server Tick Performance
+- Server tick performance
 - Targeted block information
-- Local Difficulty
-- Mood
-- Elytra Status (if this is all you care about)
-- Armor Status (if you care about all armor)
+- Local difficulty
+- Mood (when this reaches 100%, an ambient sound plays)
+- Elytra status (if this is all you care about)
+- Armor status (if you care about all armor)
 - Speed, in m/s
-- Game Clock - simulated in-world time when in the Overworld, hidden otherwise
-
-There will be more added over time.
+- Game clock - simulated in-world time when in the Overworld, hidden otherwise
 
 You can hide and show the HUD by pressing H. This is changeable in the normal Control settings under Miscellaneous.
 
@@ -25,12 +23,15 @@ You can access the HUD settings by holding control and pressing the hotkey (agai
 - HUD position
 - Which lines are visible and in what order they appear
 
-This is mostly written in **Kotlin**. As such, you must be sure to install the "Fabric Language Kotlin" mod for this to work.
+## Dependencies
+- Fabric Language Kotlin, as this is mostly written in Kotlin
+- Fabric API
 
 ## Notes
 - Armor and Elytra lines display the percentages in the same colors as the bars that show remaining durability in the UI
 - Targeted block information lines will hide if nothing is currently in range to target
 - Elytra information hides if you are not wearing an Elytra
+- Game clock hides if you are not in the Overworld
 
 ### Optional Server-based Info
 There are 2 server-based info lines that can be shown: Server light and Server tick performance. For these to be functional, you must have InfoHUD installed on the server as well. If you don't, you'll simply get no information from these. Single player (integrated server) works fine.
