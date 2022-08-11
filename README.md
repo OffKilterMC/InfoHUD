@@ -2,6 +2,8 @@
 
 This mod displays information you would only normally see on your F3 screen at all times in the upper left/right corner. You can see the following information at present:
 
+![HUD Example Image](https://i.imgur.com/AZulOnB.png)
+
 - FPS
 - Position
 - Heading/Direction
