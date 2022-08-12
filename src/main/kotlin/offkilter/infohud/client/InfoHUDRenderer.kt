@@ -95,6 +95,27 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         return lastScale
     }
 
+    private fun getEffectOffset(): Int {
+        var result = 0
+        val collection = minecraft.player!!.activeEffects
+        for (mobEffectInstance in collection) {
+            val mobEffect = mobEffectInstance.effect
+            if (!mobEffectInstance.showIcon()) continue
+
+            if (mobEffect.isBeneficial) {
+                if (result < 24) {
+                    result = 24
+                }
+            } else {
+                if (result < 50) {
+                    result = 50
+                }
+            }
+        }
+
+        return result
+    }
+
     fun render(poseStack: PoseStack) {
         val camera = minecraft.getCameraEntity()
         val level = minecraft.level
@@ -117,6 +138,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
         poseStack.pushPose()
 
+
         val scale = determineHUDScale()
         var screenWidth = minecraft.window.guiScaledWidth
         var hudScale = 1.0f
@@ -131,6 +153,8 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
             val i = (minecraft.window.width.toDouble() / scale).toInt()
             screenWidth = if (minecraft.window.width.toDouble() / scale > i.toDouble()) i + 1 else i
         }
+
+        val effectOffset = getEffectOffset()
 
         for (i in list.indices) {
             val string = list[i]
@@ -150,7 +174,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
                     // avoid any status icons
                     if (minecraft.player?.activeEffects?.isEmpty() != true) {
-                        top += (24 / hudScale).toInt()
+                        top += (effectOffset / hudScale).toInt()
                     }
 
                     fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())

@@ -1,5 +1,8 @@
 # InfoHUD Changelog
 
+## Version 1.3.1
+- Fix issue with negative status effects rendering under the HUD when using top right position.
+
 ## Version 1.3
 - Reorganized settings screen to allow the following additions.
 - Added ability to set HUD scale to whatever you like. Works similarly to the gui scale in video settings. "Auto" in our case means we follow whatever the gui scale is. The default is 2.
