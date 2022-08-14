@@ -97,18 +97,20 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
     private fun getEffectOffset(): Int {
         var result = 0
-        val collection = minecraft.player!!.activeEffects
-        for (mobEffectInstance in collection) {
-            val mobEffect = mobEffectInstance.effect
-            if (!mobEffectInstance.showIcon()) continue
+        minecraft.player?.let { player ->
+            val collection = player.activeEffects
+            for (mobEffectInstance in collection) {
+                val mobEffect = mobEffectInstance.effect
+                if (!mobEffectInstance.showIcon()) continue
 
-            if (mobEffect.isBeneficial) {
-                if (result < 24) {
-                    result = 24
-                }
-            } else {
-                if (result < 50) {
-                    result = 50
+                if (mobEffect.isBeneficial) {
+                    if (result < 24) {
+                        result = 24
+                    }
+                } else {
+                    if (result < 50) {
+                        result = 50
+                    }
                 }
             }
         }
@@ -130,14 +132,12 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
 
         val list: MutableList<Component> = Lists.newArrayList()
         for (infoLine in InfoHUDSettings.INSTANCE.infoLines) {
-            val result = infoLine.getInfoString(env)
-            if (result != null) {
-                list.add(result)
+            infoLine.getInfoString(env)?.let {
+                list.add(it)
             }
         }
 
         poseStack.pushPose()
-
 
         val scale = determineHUDScale()
         var screenWidth = minecraft.window.guiScaledWidth
@@ -173,7 +173,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
                     val left = screenWidth - (MARGIN + width)
 
                     // avoid any status icons
-                    if (minecraft.player?.activeEffects?.isEmpty() != true) {
+                    if (effectOffset > 0) {
                         top += (effectOffset / hudScale).toInt()
                     }
 
