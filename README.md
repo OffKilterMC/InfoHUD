@@ -10,7 +10,7 @@ This mod displays information you would only normally see on your F3 screen at a
 - Biome
 - Lighting (client and server)
 - Server tick performance
-- Targeted block information
+- Targeted block/entity information
 - Local difficulty
 - Mood (when this reaches 100%, an ambient sound plays)
 - Elytra status (if this is all you care about)

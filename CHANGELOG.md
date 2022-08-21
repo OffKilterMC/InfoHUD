@@ -1,5 +1,8 @@
 # InfoHUD Changelog
 
+## Version 1.4
+- Added targeted entity
+
 ## Version 1.3.1
 - Fix issue with negative status effects rendering under the HUD when using top right position.
 

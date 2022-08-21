@@ -23,6 +23,7 @@ object InfoLineRegistry {
     val BLOCK = register(BlockInfoLine())
     val CLIENT_LIGHT = register(ClientLightInfoLine())
     val TARGETED_BLOCK = register(TargetedBlockInfoLine())
+    var TARGETED_ENTITY = register(TargetedEntityInfoLine())
     val TARGETED_FLUID = register(TargetedFluidInfoLine())
     val SERVER_LIGHT = register(ServerLightInfoLine())
     val TICK_PERF = register(TickPerfInfoLine())

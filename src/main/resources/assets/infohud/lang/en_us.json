@@ -23,6 +23,8 @@
   "offkilter.infohud.location.desc": "Reports exact location of the player.",
   "offkilter.infohud.targetedblock.name": "Targeted Block",
   "offkilter.infohud.targetedblock.desc": "Reports name of current block player is looking at.",
+  "offkilter.infohud.targetedentity.name": "Targeted Entity",
+  "offkilter.infohud.targetedentity.desc": "Shows the type of entity the player is looking at.",
   "offkilter.infohud.targetedfluid.name": "Targeted Fluid",
   "offkilter.infohud.targetedfluid.desc": "Reports name of current fluid block player is looking at.",
   "offkilter.infohud.tickperf.name": "Server Tick Performance",
