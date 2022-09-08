@@ -2,6 +2,7 @@
 
 ## Version 1.4
 - Added targeted entity
+- Add real dependency on fabric-language-kotlin, so if it's missing it actually tells you that instead of giving you a mysterious crash.
 
 ## Version 1.3.1
 - Fix issue with negative status effects rendering under the HUD when using top right position.
@@ -22,7 +23,7 @@
 - Added Elytra status. This will hide if you are not wearing an Elytra.
 - Added more general armor status for those that want status on ALL their armor pieces.
 - Fixed incorrect localized string key for the hot key
-- Major internal refactor to be more scalable and allow color.
+- Major internal refactor to be more scalable and allow color
 - Added unit tests for the settings component
 - Added more info to the FPS line
 
