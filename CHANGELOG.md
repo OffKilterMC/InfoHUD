@@ -2,6 +2,7 @@
 
 ## Version 1.4
 - Added targeted entity
+- Added Moon Phase info line
 - Add real dependency on fabric-language-kotlin, so if it's missing it actually tells you that instead of giving you a mysterious crash.
 
 ## Version 1.3.1

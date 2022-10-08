@@ -33,4 +33,5 @@ object InfoLineRegistry {
     val ARMOR = register(ArmorInfoLine())
     val GAME_CLOCK = register(GameClockInfoLine())
     val SPEED = register(SpeedInfoLine())
+    val MOON = register(MoonInfoLine())
 }

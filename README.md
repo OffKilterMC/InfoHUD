@@ -10,13 +10,14 @@ This mod displays information you would only normally see on your F3 screen at a
 - Biome
 - Lighting (client and server)
 - Server tick performance
-- Targeted block/entity information
+- Targeted block/fluid/entity information
 - Local difficulty
 - Mood (when this reaches 100%, an ambient sound plays)
 - Elytra status (if this is all you care about)
 - Armor status (if you care about all armor)
 - Speed, in m/s
 - Game clock - simulated in-world time when in the Overworld, hidden otherwise
+- Moon Phase - useful to know how efficient your mushroom-based slime farm will be
 
 You can hide and show the HUD by pressing H. This is changeable in the normal Control settings under Miscellaneous.
 
