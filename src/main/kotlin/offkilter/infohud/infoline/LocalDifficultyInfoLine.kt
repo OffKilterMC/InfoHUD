@@ -4,12 +4,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.DifficultyInstance
 import java.util.*
 
-class LocalDifficultyInfoLine : InfoLine {
-    override val key = "local-difficulty"
-    override val name = "offkilter.infohud.localdifficulty.name"
-    override val description = "offkilter.infohud.localdifficulty.desc"
-    override val category = SettingsCategory.GAMEPLAY
-
+class LocalDifficultyInfoLine : InfoLineBase("local-difficulty", SettingsCategory.GAMEPLAY) {
     override fun getInfoString(env: InfoLineEnvironment): Component? {
         val blockPos = env.blockPos
         val level = env.level
