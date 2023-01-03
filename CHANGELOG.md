@@ -1,4 +1,6 @@
 # InfoHUD Changelog
+## Version 1.4.1
+- Update to work with 1.19.3
 
 ## Version 1.4
 - Added targeted entity

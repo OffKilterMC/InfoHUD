@@ -1,6 +1,6 @@
 package offkilter.infohud.infoline
 
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
@@ -12,7 +12,7 @@ class TargetedBlockInfoLine : InfoLineBase("targeted-block", SettingsCategory.BL
             val targetedBlockPos = (targetedBlock as BlockHitResult).blockPos
             val blockState = env.level.getBlockState(targetedBlockPos)
             return Component.literal(
-                "Targeted Block: " + targetedBlockPos.x + ", " + targetedBlockPos.y + ", " + targetedBlockPos.z + " " + Registry.BLOCK.getKey(
+                "Targeted Block: " + targetedBlockPos.x + ", " + targetedBlockPos.y + ", " + targetedBlockPos.z + " " + BuiltInRegistries.BLOCK.getKey(
                     blockState.block
                 )
             )

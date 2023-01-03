@@ -63,23 +63,12 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
                 InfoHUDSettings.INSTANCE.position = value
             })
 
-        infoLinesButton = addRenderableWidget(Button(
-            (width / 2) - 155,
-            65,
-            BUTTON_WIDTH,
-            20,
-            Component.translatable("offkilter.infohud.settings.infolines")
-        ) {
-            minecraft!!.setScreen(InfoHUDOptionsScreen(this))
-        })
+        infoLinesButton = addRenderableWidget(Button.builder(Component.translatable("offkilter.infohud.settings.infolines")) { minecraft!!.setScreen(InfoHUDOptionsScreen(this)) }.pos((width / 2) - 155,
+            65).size(BUTTON_WIDTH, 20).build())
 
-        doneButton = addRenderableWidget(Button(
-            (width / 2) - (BUTTON_WIDTH / 2),
-            height - 40,
-            BUTTON_WIDTH,
-            20,
-            CommonComponents.GUI_DONE
-        ) { onClose() })
+        doneButton = addRenderableWidget(Button.builder(CommonComponents.GUI_DONE) { onClose() }
+            .pos((width / 2) - (BUTTON_WIDTH / 2), height - 40)
+            .size(BUTTON_WIDTH, 20).build())
     }
 
     override fun render(poseStack: PoseStack, i: Int, j: Int, f: Float) {

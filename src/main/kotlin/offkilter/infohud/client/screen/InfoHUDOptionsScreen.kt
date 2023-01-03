@@ -31,9 +31,8 @@ class InfoHUDOptionsScreen(
     }
 
     override fun init() {
-        doneButton = addRenderableWidget(Button(
-            (width / 2) - (DONE_BUTTON_WIDTH / 2), height - 40, DONE_BUTTON_WIDTH, 20, CommonComponents.GUI_DONE
-        ) { onClose() })
+        doneButton = addRenderableWidget(Button.builder(CommonComponents.GUI_DONE) { onClose() }
+            .pos((width / 2) - (DONE_BUTTON_WIDTH / 2), (height - 40)).size(DONE_BUTTON_WIDTH, 20).build())
         availableInfoLines =
             InfoLineList(minecraft!!, LIST_WIDTH, height, Component.translatable("pack.available.title"))
         availableInfoLines.setLeftPos(width / 2 - 4 - 200)

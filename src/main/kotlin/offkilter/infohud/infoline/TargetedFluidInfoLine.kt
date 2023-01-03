@@ -1,6 +1,6 @@
 package offkilter.infohud.infoline
 
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
@@ -12,10 +12,10 @@ class TargetedFluidInfoLine : InfoLineBase("targeted-fluid", SettingsCategory.BL
             val targetedBlockPos = (targetedFluid as BlockHitResult).blockPos
             val fluidState = env.level.getFluidState(targetedBlockPos)
             if (fluidState != null) {
-                val fluidType = Registry.FLUID.getKey(fluidState.type)
+                val fluidType = BuiltInRegistries.FLUID.getKey(fluidState.type)
                 if (fluidType.toString() != "minecraft:empty") {
                     return Component.literal(
-                        "Targeted Fluid: " + targetedBlockPos.x + ", " + targetedBlockPos.y + ", " + targetedBlockPos.z + " " + Registry.FLUID.getKey(
+                        "Targeted Fluid: " + targetedBlockPos.x + ", " + targetedBlockPos.y + ", " + targetedBlockPos.z + " " + BuiltInRegistries.FLUID.getKey(
                             fluidState.type
                         )
                     )
