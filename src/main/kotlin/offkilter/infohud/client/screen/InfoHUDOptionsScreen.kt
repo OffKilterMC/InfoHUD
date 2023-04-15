@@ -62,7 +62,7 @@ class InfoHUDOptionsScreen(
     }
 
     override fun render(poseStack: PoseStack, i: Int, j: Int, f: Float) {
-        renderDirtBackground(0)
+        renderDirtBackground(poseStack)
         availableInfoLines.render(poseStack, i, j, f)
         selectedInfoLines.render(poseStack, i, j, f)
         drawCenteredString(poseStack, font, title, width / 2, 8, 0xFFFFFF)

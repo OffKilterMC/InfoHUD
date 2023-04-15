@@ -22,7 +22,7 @@ class InfoLineList(minecraft: Minecraft, width: Int, height: Int, private val ti
         setRenderHeader(true, (9.0f * 1.5f).toInt())
     }
 
-    override fun renderHeader(poseStack: PoseStack, i: Int, j: Int, tesselator: Tesselator) {
+    override fun renderHeader(poseStack: PoseStack, i: Int, j: Int) {
         val component = Component.empty().append(title).withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD)
         minecraft.font.draw(
             poseStack, component, (i + width / 2 - minecraft.font.width(component) / 2).toFloat(), Math.min(

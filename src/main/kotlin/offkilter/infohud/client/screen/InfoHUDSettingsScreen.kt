@@ -72,7 +72,7 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
     }
 
     override fun render(poseStack: PoseStack, i: Int, j: Int, f: Float) {
-        renderDirtBackground(0)
+        renderDirtBackground(poseStack)
         drawCenteredString(poseStack, font, title, width / 2, 8, 0xFFFFFF)
         super.render(poseStack, i, j, f)
     }

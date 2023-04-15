@@ -92,7 +92,7 @@ class InfoHUD : ModInitializer {
             val now = Util.getMillis()
             if (now - lastTickPerfSend >= 1000) {
                 val buf = PacketByteBufs.create()
-                buf.writeLong(Mth.average(server.tickTimes).toLong())
+                buf.writeLong(server.tickTimes.toList().average().toLong())
                 buf.writeLong(tickCount.toLong())
                 for (p in server.playerList.players) {
                     if (ServerPlayNetworking.canSend(p, InfoHUDNetworking.TICK_PERF)) {
