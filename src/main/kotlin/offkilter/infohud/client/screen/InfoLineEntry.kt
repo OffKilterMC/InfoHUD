@@ -1,9 +1,8 @@
 package offkilter.infohud.client.screen
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiComponent
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.ObjectSelectionList
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.GameRenderer
@@ -83,7 +82,7 @@ class InfoLineEntry(
     }
 
     override fun render(
-        poseStack: PoseStack,
+        guiGraphics: GuiGraphics,
         index: Int,
         rowTop: Int,
         rowLeft: Int,
@@ -98,29 +97,26 @@ class InfoLineEntry(
         var hasDownButton = false
 
         if (!isMouseOver) {
-            RenderSystem.setShader { GameRenderer.getPositionTexShader() }
-            RenderSystem.setShaderTexture(0, this.option.icon)
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-            GuiComponent.blit(poseStack, rowLeft, rowTop, 0.0f, 0.0f, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE)
+            guiGraphics.blit(this.option.icon, rowLeft, rowTop, 0.0f, 0.0f, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE)
         } else {
             val localMouse = Point(mouseX - rowLeft, mouseY - rowTop)
             val mouseLoc = Point(mouseX, mouseY)
 
             val rowRect = Rect(rowLeft, rowTop, rowWidth - 10, rowHeight)
 
-            RenderSystem.setShaderTexture(0, ResourceLocation("infohud:textures/gui/arrows.png"))
-            GuiComponent.fill(
-                poseStack, rowRect.x, rowRect.y, rowRect.maxX, rowRect.maxY, 0x809090B0.toInt()
+            guiGraphics.fill(
+                rowRect.x, rowRect.y, rowRect.maxX, rowRect.maxY, 0x809090B0.toInt()
             )
             RenderSystem.setShader { GameRenderer.getPositionTexShader() }
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
 
+            val arrowsLoc = ResourceLocation("infohud:textures/gui/arrows.png")
             val iconLoc = getArrowTextureXY(
                 if (this.option.canAdd) ArrowTextureIcon.ADD else ArrowTextureIcon.REMOVE,
                 localMouse.x < ICON_SIZE
             )
-            GuiComponent.blit(
-                poseStack,
+            guiGraphics.blit(
+                arrowsLoc,
                 rowRect.x,
                 rowRect.y,
                 iconLoc.x.toFloat(),
@@ -134,8 +130,8 @@ class InfoLineEntry(
             if (this.option.canMoveUp()) {
                 val rect = upButtonRect(rowRect)
                 val texPt = getArrowTextureXY(ArrowTextureIcon.UP, rect.contains(mouseLoc))
-                GuiComponent.blit(
-                    poseStack,
+                guiGraphics.blit(
+                    arrowsLoc,
                     rect.x,
                     rect.y,
                     texPt.x.toFloat(),
@@ -150,8 +146,8 @@ class InfoLineEntry(
             if (this.option.canMoveDown()) {
                 val rect = downButtonRect(rowRect)
                 val texPt = getArrowTextureXY(ArrowTextureIcon.DOWN, rect.contains(mouseLoc))
-                GuiComponent.blit(
-                    poseStack,
+                guiGraphics.blit(
+                    arrowsLoc,
                     rect.x,
                     rect.y,
                     texPt.x.toFloat(),
@@ -174,9 +170,7 @@ class InfoLineEntry(
             maxTextWidth -= ICON_SIZE
         }
         val text = possiblyTruncatedString(this.minecraft, option.name, maxTextWidth)
-        this.minecraft.font.drawShadow(
-            poseStack, text, (rowLeft + ICON_SIZE + 4).toFloat(), (rowTop + 4).toFloat(), 0xFFFFFF
-        )
+        guiGraphics.drawString(this.minecraft.font, text, (rowLeft + ICON_SIZE + 4), (rowTop + 4), 0xFFFFFF)
     }
 
     override fun getNarration(): Component {

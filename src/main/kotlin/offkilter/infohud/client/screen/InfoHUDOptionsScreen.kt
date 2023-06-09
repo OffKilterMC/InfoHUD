@@ -3,9 +3,9 @@
  */
 package offkilter.infohud.client.screen
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
@@ -61,12 +61,12 @@ class InfoHUDOptionsScreen(
         }
     }
 
-    override fun render(poseStack: PoseStack, i: Int, j: Int, f: Float) {
-        renderDirtBackground(poseStack)
-        availableInfoLines.render(poseStack, i, j, f)
-        selectedInfoLines.render(poseStack, i, j, f)
-        drawCenteredString(poseStack, font, title, width / 2, 8, 0xFFFFFF)
-        super.render(poseStack, i, j, f)
+    override fun render(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
+        renderDirtBackground(guiGraphics)
+        availableInfoLines.render(guiGraphics, i, j, f)
+        selectedInfoLines.render(guiGraphics, i, j, f)
+        guiGraphics.drawCenteredString(font, title, width / 2, 8, 0xFFFFFF)
+        super.render(guiGraphics, i, j, f)
     }
 
 }

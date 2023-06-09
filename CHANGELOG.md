@@ -1,4 +1,7 @@
 # InfoHUD Changelog
+## Version 1.4.3
+- Update to work with 1.20
+
 ## Version 1.4.2
 - Update to work with 1.19.4
 

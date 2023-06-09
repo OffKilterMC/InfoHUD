@@ -3,12 +3,11 @@
  */
 package offkilter.infohud.client.screen
 
-import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.Tesselator
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.ObjectSelectionList
 import net.minecraft.network.chat.Component
 import java.util.*
@@ -22,12 +21,12 @@ class InfoLineList(minecraft: Minecraft, width: Int, height: Int, private val ti
         setRenderHeader(true, (9.0f * 1.5f).toInt())
     }
 
-    override fun renderHeader(poseStack: PoseStack, i: Int, j: Int) {
+    override fun renderHeader(guiGraphics: GuiGraphics, i: Int, j: Int) {
         val component = Component.empty().append(title).withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD)
-        minecraft.font.draw(
-            poseStack, component, (i + width / 2 - minecraft.font.width(component) / 2).toFloat(), Math.min(
+        guiGraphics.drawString(minecraft.font,
+            component, (i + width / 2 - minecraft.font.width(component) / 2), Math.min(
                 y0 + 3, j
-            ).toFloat(), 0xFFFFFF
+            ), 0xFFFFFF
         )
     }
 

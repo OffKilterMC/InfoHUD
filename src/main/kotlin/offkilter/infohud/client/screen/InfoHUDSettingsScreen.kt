@@ -1,6 +1,6 @@
 package offkilter.infohud.client.screen
 
-import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.CycleButton
 import net.minecraft.client.gui.screens.Screen
@@ -71,10 +71,10 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
             .size(BUTTON_WIDTH, 20).build())
     }
 
-    override fun render(poseStack: PoseStack, i: Int, j: Int, f: Float) {
-        renderDirtBackground(poseStack)
-        drawCenteredString(poseStack, font, title, width / 2, 8, 0xFFFFFF)
-        super.render(poseStack, i, j, f)
+    override fun render(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
+        renderDirtBackground(guiGraphics)
+        guiGraphics.drawCenteredString(font, title, width / 2, 8, 0xFFFFFF)
+        super.render(guiGraphics, i, j, f)
     }
 
     companion object {

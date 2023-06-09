@@ -1,8 +1,8 @@
 package offkilter.infohud.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import offkilter.infohud.client.InfoHUDClient;
 import offkilter.infohud.client.InfoHUDRenderer;
 import offkilter.infohud.client.PerfCounters;
@@ -22,12 +22,12 @@ public class GuiMixin {
     private Minecraft minecraft;
 
     @Inject(method="render", at=@At(value="RETURN", target="Lnet/minecraft/client/gui/Gui;renderEffects(Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
-    private void HookIt(PoseStack poseStack, float f, CallbackInfo ci) {
+    private void HookIt(GuiGraphics guiGraphics, float f, CallbackInfo ci) {
         if (InfoHUDClient.showHUD && !this.minecraft.options.renderDebug) {
             if (renderer == null) {
                 renderer = new InfoHUDRenderer(this.minecraft);
             }
-            renderer.render(poseStack);
+            renderer.render(guiGraphics);
         }
         PerfCounters.INSTANCE.updateFPS();
     }

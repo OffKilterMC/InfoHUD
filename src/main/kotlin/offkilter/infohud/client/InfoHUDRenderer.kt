@@ -1,12 +1,11 @@
 package offkilter.infohud.client
 
 import com.google.common.collect.Lists
-import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.datafixers.util.Either
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiComponent
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure
@@ -19,7 +18,7 @@ import offkilter.infohud.infoline.InfoLineEnvironment
 import java.util.concurrent.CompletableFuture
 
 @Environment(value = EnvType.CLIENT)
-class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
+class InfoHUDRenderer(private val minecraft: Minecraft) {
     private val font = minecraft.font
     private var lastChunkPos: ChunkPos? = null
     private var clientChunk: LevelChunk? = null
@@ -118,7 +117,7 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
         return result
     }
 
-    fun render(poseStack: PoseStack) {
+    fun render(guiGraphics: GuiGraphics) {
         val camera = minecraft.getCameraEntity()
         val level = minecraft.level
 
@@ -137,52 +136,56 @@ class InfoHUDRenderer(private val minecraft: Minecraft) : GuiComponent() {
             }
         }
 
-        poseStack.pushPose()
+        guiGraphics.drawManaged {
+            guiGraphics.pose().pushPose()
 
-        val scale = determineHUDScale()
-        var screenWidth = minecraft.window.guiScaledWidth
-        var hudScale = 1.0f
-        if (scale != 0) {
-            val guiScale = minecraft.window.guiScale.toFloat()
-            if (guiScale.toInt() != scale) {
-                hudScale = scale / guiScale
-                poseStack.scale(
-                    hudScale, hudScale, hudScale
-                )
-            }
-            val i = (minecraft.window.width.toDouble() / scale).toInt()
-            screenWidth = if (minecraft.window.width.toDouble() / scale > i.toDouble()) i + 1 else i
-        }
-
-        val effectOffset = getEffectOffset()
-
-        for (i in list.indices) {
-            val string = list[i]
-            val height = font.lineHeight + 1
-            val width = font.width(string)
-
-            when (InfoHUDSettings.INSTANCE.position) {
-                InfoHUDSettings.Position.TOP_LEFT -> {
-                    val top = MARGIN + height * i
-                    val left = MARGIN
-                    fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
-                    font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
+            val scale = determineHUDScale()
+            var screenWidth = minecraft.window.guiScaledWidth
+            var hudScale = 1.0f
+            if (scale != 0) {
+                val guiScale = minecraft.window.guiScale.toFloat()
+                if (guiScale.toInt() != scale) {
+                    hudScale = scale / guiScale
+                    guiGraphics.pose().scale(
+                        hudScale, hudScale, hudScale
+                    )
                 }
-                InfoHUDSettings.Position.TOP_RIGHT -> {
-                    var top = MARGIN + height * i
-                    val left = screenWidth - (MARGIN + width)
+                val i = (minecraft.window.width.toDouble() / scale).toInt()
+                screenWidth = if (minecraft.window.width.toDouble() / scale > i.toDouble()) i + 1 else i
+            }
 
-                    // avoid any status icons
-                    if (effectOffset > 0) {
-                        top += (effectOffset / hudScale).toInt()
+            val effectOffset = getEffectOffset()
+
+            for (i in list.indices) {
+                val string = list[i]
+                val height = font.lineHeight + 1
+                val width = font.width(string)
+
+                when (InfoHUDSettings.INSTANCE.position) {
+                    InfoHUDSettings.Position.TOP_LEFT -> {
+                        val top = MARGIN + height * i
+                        val left = MARGIN
+                        guiGraphics.fill( left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
+                        guiGraphics.drawString(this.font, string, left, top, 0xE0E0E0)
                     }
 
-                    fill(poseStack, left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
-                    font.draw(poseStack, string, left.toFloat(), top.toFloat(), 0xE0E0E0)
+                    InfoHUDSettings.Position.TOP_RIGHT -> {
+                        var top = MARGIN + height * i
+                        val left = screenWidth - (MARGIN + width)
+
+                        // avoid any status icons
+                        if (effectOffset > 0) {
+                            top += (effectOffset / hudScale).toInt()
+                        }
+
+                        guiGraphics.fill( left - 1, top - 1, left + width + 1, top + height - 1, 0x90505050.toInt())
+                        guiGraphics.drawString(this.font, string, left, top, 0xE0E0E0)
+                    }
                 }
             }
+
+            guiGraphics.pose().popPose()
         }
-        poseStack.popPose()
     }
 
     companion object {
