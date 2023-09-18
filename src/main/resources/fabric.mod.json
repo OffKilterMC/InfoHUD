@@ -23,7 +23,7 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric": ">=0.83.0+1.20",
-    "minecraft": "1.20",
+    "minecraft": ">=1.20 <1.20.2-",
     "fabric-language-kotlin": ">=1.8.3+kotlin.1.7.10"
   },
   "accessWidener" : "infohud.accesswidener"
