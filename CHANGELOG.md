@@ -1,4 +1,7 @@
 # InfoHUD Changelog
+## Version 1.4.5
+- Update to work with 1.20.2 (changes to how debug screen was accessed)
+
 ## Version 1.4.4
 - Update to work with 1.20.1 as well as 1.20
 
