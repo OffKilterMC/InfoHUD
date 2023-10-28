@@ -72,9 +72,12 @@ class InfoHUDSettingsScreen(private val lastScreen: Screen?) :
     }
 
     override fun render(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
-        renderDirtBackground(guiGraphics)
-        guiGraphics.drawCenteredString(font, title, width / 2, 8, 0xFFFFFF)
         super.render(guiGraphics, i, j, f)
+        guiGraphics.drawCenteredString(font, title, width / 2, 8, 0xFFFFFF)
+    }
+
+    override fun renderBackground(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
+        renderDirtBackground(guiGraphics)
     }
 
     companion object {
