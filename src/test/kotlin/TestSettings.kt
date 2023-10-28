@@ -1,5 +1,5 @@
-import offkilter.infohud.client.InfoHUDSettings
-import offkilter.infohud.infoline.InfoLineRegistry
+import offkiltermc.infohud.client.InfoHUDSettings
+import offkiltermc.infohud.infoline.InfoLineRegistry
 import java.io.File
 import java.io.Reader
 import java.io.StringWriter

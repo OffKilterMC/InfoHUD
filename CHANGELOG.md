@@ -1,4 +1,8 @@
 # InfoHUD Changelog
+
+## Version 1.4.7
+- Support 1.20.4
+
 ## Version 1.4.6
 - Fix issue with dark overlay in InfoHUD options screens
 

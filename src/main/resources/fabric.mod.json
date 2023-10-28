@@ -11,19 +11,19 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "offkilter.infohud.client.InfoHUDClient"
+      "offkiltermc.infohud.client.InfoHUDClient"
     ],
     "main": [
-      "offkilter.infohud.InfoHUD"
+      "offkiltermc.infohud.InfoHUD"
     ]
   },
   "mixins": [
     "infohud.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.24",
+    "fabricloader": ">=${loader_version}",
     "fabric": ">=0.90.4+1.20.2",
-    "minecraft": "1.20.2",
+    "minecraft": "1.20.4",
     "fabric-language-kotlin": ">=1.8.3+kotlin.1.7.10"
   },
   "accessWidener" : "infohud.accesswidener"
